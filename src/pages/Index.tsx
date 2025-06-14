@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -66,8 +65,8 @@ const Index = () => {
     queryFn: fetchCategories,
   });
 
-  const createMutation = useMutation({
-    mutationFn: async (values: CategoryFormValues) => {
+  const createMutation = useMutation<void, Error, CategoryFormValues>({
+    mutationFn: async (values) => {
       const { error } = await supabase.from('categories').insert(values);
       if (error) throw error;
     },
@@ -81,8 +80,8 @@ const Index = () => {
     },
   });
 
-  const updateMutation = useMutation({
-    mutationFn: async (values: CategoryFormValues) => {
+  const updateMutation = useMutation<void, Error, CategoryFormValues>({
+    mutationFn: async (values) => {
       if (!editingCategory) return;
       const { error } = await supabase.from('categories').update(values).eq('id', editingCategory.id);
       if (error) throw error;
