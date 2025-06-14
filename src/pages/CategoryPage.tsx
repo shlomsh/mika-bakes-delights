@@ -141,9 +141,10 @@ const CategoryPage: React.FC = () => {
                   )}
                 </CardHeader>
                 <CardContent className="mt-auto">
-                  {/* This button will eventually link to a full recipe page */}
-                  <Button className="w-full bg-pastelBlue hover:bg-pastelBlue/90 text-choco font-bold">
-                    הצג מתכון
+                  <Button asChild className="w-full bg-pastelBlue hover:bg-pastelBlue/90 text-choco font-bold">
+                    <Link to={`/recipe/${recipe.id}`}>
+                      הצג מתכון
+                    </Link>
                   </Button>
                 </CardContent>
               </Card>
