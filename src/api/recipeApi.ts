@@ -57,7 +57,7 @@ export async function updateRecipeInDb({ recipeId, values }: { recipeId: string,
     { name: 'recipe_sauce_ingredients', data: sauce_ingredients, sortKey: 'sort_order' },
     { name: 'recipe_sauces', data: sauces, sortKey: 'step_number' },
     { name: 'recipe_garnishes', data: garnishes, sortKey: 'step_number' },
-  ];
+  ] as const;
 
   for (const table of tablesToUpdate) {
     const { error: deleteError } = await supabase.from(table.name).delete().eq('recipe_id', recipeId);
@@ -69,7 +69,9 @@ export async function updateRecipeInDb({ recipeId, values }: { recipeId: string,
         description: item.description,
         [table.sortKey]: index + 1,
       }));
-      const { error: insertError } = await supabase.from(table.name).insert(newData);
+      // Using `as any` to work around a complex TypeScript + Supabase typing issue with dynamic table names.
+      // The structure is guaranteed by the `tablesToUpdate` array definition.
+      const { error: insertError } = await supabase.from(table.name).insert(newData as any);
       if (insertError) throw insertError;
     }
   }

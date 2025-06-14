@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useFormContext, useFieldArray } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
@@ -51,8 +50,13 @@ const SauceSection = () => {
                 )}
               />
             ))}
-            <Button type="button" variant="outline" onClick={() => appendSauceIngredient({ description: '' })}>
+            {/* Desktop Add Button */}
+            <Button type="button" variant="outline" onClick={() => appendSauceIngredient({ description: '' })} className="hidden sm:inline-flex">
               <PlusCircle className="mr-2 h-4 w-4" /> הוסף מצרך לרוטב
+            </Button>
+            {/* Mobile Add Button */}
+            <Button type="button" variant="outline" size="icon" onClick={() => appendSauceIngredient({ description: '' })} className="sm:hidden" aria-label="הוסף מצרך לרוטב">
+              <PlusCircle className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -79,8 +83,13 @@ const SauceSection = () => {
                 )}
               />
             ))}
-            <Button type="button" variant="outline" onClick={() => appendSauce({ description: '' })}>
+            {/* Desktop Add Button */}
+            <Button type="button" variant="outline" onClick={() => appendSauce({ description: '' })} className="hidden sm:inline-flex">
               <PlusCircle className="mr-2 h-4 w-4" /> הוסף שלב לרוטב
+            </Button>
+            {/* Mobile Add Button */}
+            <Button type="button" variant="outline" size="icon" onClick={() => appendSauce({ description: '' })} className="sm:hidden" aria-label="הוסף שלב לרוטב">
+              <PlusCircle className="h-4 w-4" />
             </Button>
           </div>
         </div>

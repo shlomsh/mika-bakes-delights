@@ -1,10 +1,11 @@
+
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
-import { Loader2, Save } from 'lucide-react';
+import { Loader2, Save, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Recipe as BaseRecipe } from '@/data/sampleRecipes';
 import { recipeEditSchema, RecipeEditFormValues } from '@/schemas/recipeEditSchema';
@@ -120,11 +121,24 @@ const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSav
               <SauceSection />
               <GarnishSection />
 
-              <div className="flex justify-end gap-4">
-                <Button type="button" variant="ghost" onClick={onCancel}>ביטול</Button>
-                <Button type="submit" disabled={mutation.isPending}>
+              <div className="flex justify-end gap-2 sm:gap-4">
+                {/* Desktop Cancel Button */}
+                <Button type="button" variant="ghost" onClick={onCancel} className="hidden sm:inline-flex">
+                  ביטול
+                </Button>
+                {/* Mobile Cancel Button */}
+                <Button type="button" variant="ghost" size="icon" onClick={onCancel} className="sm:hidden" aria-label="ביטול">
+                  <X className="h-5 w-5" />
+                </Button>
+
+                {/* Desktop Save Button */}
+                <Button type="submit" disabled={mutation.isPending} className="hidden sm:inline-flex">
                   {mutation.isPending ? <Loader2 className="ml-2 h-4 w-4 animate-spin" /> : <Save className="ml-2 h-4 w-4" />}
                   שמור שינויים
+                </Button>
+                {/* Mobile Save Button */}
+                <Button type="submit" size="icon" disabled={mutation.isPending} className="sm:hidden" aria-label="שמור שינויים">
+                  {mutation.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
                 </Button>
               </div>
             </form>

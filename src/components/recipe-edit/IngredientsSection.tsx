@@ -40,8 +40,13 @@ const IngredientsSection = () => {
             )}
           />
         ))}
-        <Button type="button" variant="outline" onClick={() => append({ description: '' })}>
+        {/* Desktop Add Button */}
+        <Button type="button" variant="outline" onClick={() => append({ description: '' })} className="hidden sm:inline-flex">
           <PlusCircle className="mr-2 h-4 w-4" /> הוסף מרכיב
+        </Button>
+        {/* Mobile Add Button */}
+        <Button type="button" variant="outline" size="icon" onClick={() => append({ description: '' })} className="sm:hidden" aria-label="הוסף מרכיב">
+          <PlusCircle className="h-4 w-4" />
         </Button>
       </CardContent>
     </Card>
