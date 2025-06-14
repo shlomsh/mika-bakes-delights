@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { FileText, Search as SearchIcon } from 'lucide-react';
+import { Search as SearchIcon } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -59,14 +59,14 @@ export function RecipeSearch() {
   return (
     <>
       <Button
-        variant="outline"
-        className="relative h-10 w-full justify-start rounded-md bg-background text-sm font-normal text-muted-foreground shadow-none sm:pr-12 md:w-40 lg:w-64"
+        variant="secondary"
+        className="relative h-10 w-full justify-start rounded-md text-sm font-normal shadow-none sm:pr-12 md:w-40 lg:w-64"
         onClick={() => setOpen(true)}
       >
-        <SearchIcon className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <SearchIcon className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2" />
         <span className="hidden lg:inline-flex">חפש מתכון...</span>
         <span className="inline-flex lg:hidden">חפש...</span>
-        <kbd className="pointer-events-none absolute right-[0.5rem] top-1/2 -translate-y-1/2 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
+        <kbd className="pointer-events-none absolute right-[0.5rem] top-1/2 -translate-y-1/2 hidden h-5 select-none items-center gap-1 rounded border border-choco/20 bg-choco/10 px-1.5 font-mono text-[10px] font-medium text-choco opacity-100 sm:flex">
           <span className="text-xs">⌘</span>K
         </kbd>
       </Button>
@@ -81,16 +81,25 @@ export function RecipeSearch() {
           <CommandEmpty>{!isLoading && query.length > 0 ? 'לא נמצאו מתכונים.' : 'התחל להקליד כדי לחפש...'}</CommandEmpty>
           {isLoading && <div className="p-4 py-6 text-center text-sm">טוען...</div>}
           {recipes && recipes.length > 0 && (
-            <CommandGroup heading="מתכונים">
+            <CommandGroup 
+              heading="מתכונים"
+              className="[&_[cmdk-group-heading]]:text-choco [&_[cmdk-group-heading]]:font-fredoka [&_[cmdk-group-heading]]:text-lg"
+            >
               {recipes.map((recipe) => (
                 <CommandItem
                   key={recipe.id}
                   value={recipe.name}
                   onSelect={() => handleSelect(recipe.id)}
-                  className="cursor-pointer"
+                  className="cursor-pointer flex items-center gap-4 py-2 data-[selected='true']:bg-pastelBlue/40"
                 >
-                  <FileText className="ml-2 h-4 w-4" />
-                  <span>{recipe.name}</span>
+                  <img
+                    src={recipe.image_url || '/placeholder.svg'}
+                    alt={recipe.name}
+                    className="w-12 h-12 object-cover rounded-md"
+                    width={48}
+                    height={48}
+                  />
+                  <span className="font-medium text-choco">{recipe.name}</span>
                 </CommandItem>
               ))}
             </CommandGroup>
