@@ -24,17 +24,19 @@ const CategoryCards: React.FC<CategoryCardsProps> = ({ categories, onEdit }) => 
   const { isAuthenticated } = useAuth();
 
   return (
-    <aside className="flex flex-col gap-6 w-full" dir="rtl">
+    <aside className="flex flex-col gap-4 w-full" dir="rtl">
       {categories.map((cat) => (
         <div key={cat.id} className="relative group">
           <Link to={`/category/${cat.slug}`} className="no-underline">
             <div
-              className={`rounded-3xl shadow-xl p-5 flex flex-col items-center justify-around h-40 ${cat.color || 'bg-gray-200'} relative transition-transform hover:scale-105 cursor-pointer`}
+              className={`rounded-2xl shadow-lg p-4 flex items-center gap-4 ${cat.color || 'bg-gray-200'} relative transition-transform hover:scale-105 cursor-pointer`}
               dir="rtl"
             >
-              {cat.icon && <DynamicIcon name={cat.icon} className="w-8 h-8 text-choco mb-2 opacity-85" strokeWidth={2.5} />}
-              <span className="font-fredoka text-2xl text-choco tracking-wide">{cat.name}</span>
-              {cat.description && <span className="mt-2 text-choco/75 text-sm text-center w-11/12">{cat.description}</span>}
+              {cat.icon && <DynamicIcon name={cat.icon} className="w-10 h-10 text-choco opacity-85 shrink-0" strokeWidth={2} />}
+              <div className="flex-grow">
+                <span className="font-fredoka text-xl text-choco tracking-wide">{cat.name}</span>
+                {cat.description && <p className="mt-1 text-choco/75 text-sm leading-tight">{cat.description}</p>}
+              </div>
             </div>
           </Link>
           {isAuthenticated && (
