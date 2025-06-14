@@ -27,16 +27,8 @@ interface RecipeHeaderProps {
 
 const RecipeHeader: React.FC<RecipeHeaderProps> = ({ recipe, isAuthenticated, isDeletePending, onEdit, onDelete }) => {
   return (
-    <header className="w-full max-w-5xl mb-6 md:mb-10 flex flex-col md:flex-row justify-between items-center">
-      <div className="mb-4 md:mb-0">
-        <h1 className="font-fredoka text-3xl md:text-4xl text-choco text-center md:text-right">{recipe.name}</h1>
-        {recipe.categories && (
-          <Link to={`/category/${recipe.categories.slug}`} className="text-pastelOrange hover:underline font-fredoka text-lg">
-            קטגוריה: {recipe.categories.name}
-          </Link>
-        )}
-      </div>
-      <div className="flex items-center gap-4">
+    <header className="w-full max-w-5xl mb-6 md:mb-10 flex flex-col">
+      <div className="flex items-center gap-4 self-end mb-4 md:mb-6">
         {isAuthenticated && (
           <>
             <Button variant="outline" onClick={onEdit}>
@@ -77,6 +69,14 @@ const RecipeHeader: React.FC<RecipeHeaderProps> = ({ recipe, isAuthenticated, is
           </Link>
         </Button>
         <AuthComponent />
+      </div>
+      <div>
+        <h1 className="font-fredoka text-3xl md:text-4xl text-choco text-center md:text-right">{recipe.name}</h1>
+        {recipe.categories && (
+          <Link to={`/category/${recipe.categories.slug}`} className="text-pastelOrange hover:underline font-fredoka text-lg">
+            קטגוריה: {recipe.categories.name}
+          </Link>
+        )}
       </div>
     </header>
   );
