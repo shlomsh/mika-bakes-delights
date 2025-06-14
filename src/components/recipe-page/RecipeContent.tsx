@@ -80,15 +80,22 @@ const RecipeContent: React.FC<RecipeContentProps> = ({ recipe }) => {
       )}
       {recipe.recipe_sauces && recipe.recipe_sauces.length > 0 && (
         <CardFooter className="flex-col items-start p-6 bg-white rounded-b-lg border-t border-choco/10">
-          <h2 className="font-fredoka text-xl text-choco mb-2 flex items-center">
+          <h2 className="font-fredoka text-xl text-choco mb-4 flex items-center">
             <Soup className="mr-2 text-pastelOrange" />
             רוטב:
           </h2>
-          <ul className="w-full list-disc list-inside space-y-1 text-choco/90 bg-pastelYellow/20 p-4 rounded-md">
+          <ol className="w-full list-none space-y-6 text-choco/90">
             {recipe.recipe_sauces.map((step) => (
-              <li key={step.step_number}>{step.description}</li>
+              <li key={step.step_number} className="flex items-start gap-x-4">
+                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-pastelOrange text-choco font-fredoka text-lg font-bold">
+                  {step.step_number}
+                </div>
+                <p className="flex-1 pt-1 leading-relaxed text-choco/90">
+                  {step.description}
+                </p>
+              </li>
             ))}
-          </ul>
+          </ol>
         </CardFooter>
       )}
     </Card>
