@@ -43,6 +43,7 @@ export type Database = {
           ingredients: Json | null
           instructions: string | null
           name: string
+          recommended: boolean
           updated_at: string
         }
         Insert: {
@@ -54,6 +55,7 @@ export type Database = {
           ingredients?: Json | null
           instructions?: string | null
           name: string
+          recommended?: boolean
           updated_at?: string
         }
         Update: {
@@ -65,6 +67,7 @@ export type Database = {
           ingredients?: Json | null
           instructions?: string | null
           name?: string
+          recommended?: boolean
           updated_at?: string
         }
         Relationships: [

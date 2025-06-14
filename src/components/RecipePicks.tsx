@@ -1,53 +1,74 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import { Leaf, Cookie } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { type Recipe } from "@/data/sampleRecipes";
+import { Loader2 } from "lucide-react";
 
-const picks = [
-  {
-    id: "e2c6f9g7-9d7e-5g3c-0b2c-4f3e5g6h7i8j",
-    label: "עלי גפן ממולאים",
-    desc: "עלי גפן ממולאים באורז ועשבי תיבול, מבושלים ברוטב חמוץ-מתוק.",
-    img: "/lovable-uploads/1ccfb5d5-09ee-4b54-8cdc-7af66df9703b.png",
-    icon: <Leaf className="w-5 h-5 text-green-600" />
-  },
-  {
-    id: "f3d7g0h8-0e8f-6h4d-1c3d-5g4f6h7i8j9k",
-    label: "עוגיות שוקולד צ'יפס מושלמות",
-    desc: "המתכון האולטימטיבי לעוגיות שוקולד צ'יפס, רכות מבפנים וקריספיות בשוליים.",
-    img: "/lovable-uploads/4987dbcd-1e75-4507-80c7-b7fc9ca1f7ee.png",
-    icon: <Cookie className="w-5 h-5 text-yellow-600" />
-  },
-];
+const fetchRecommendedRecipes = async (): Promise<Recipe[]> => {
+  const { data, error } = await supabase
+    .from('recipes')
+    .select('*')
+    .eq('recommended', true)
+    .limit(2);
+
+  if (error) {
+    console.error('Error fetching recommended recipes:', error);
+    throw new Error('Could not fetch recommended recipes');
+  }
+
+  return data || [];
+};
 
 const RecipePicks: React.FC = () => {
+  const { data: recipes, isLoading, isError } = useQuery({
+    queryKey: ['recommendedRecipes'],
+    queryFn: fetchRecommendedRecipes,
+  });
+
+  if (isLoading) {
+    return (
+      <section className="bg-white rounded-3xl shadow-lg p-7 mt-8 flex justify-center items-center" dir="rtl" style={{ minHeight: '200px' }}>
+        <Loader2 className="w-8 h-8 text-choco animate-spin" />
+      </section>
+    );
+  }
+  
   return (
     <section className="bg-white rounded-3xl shadow-lg p-7 mt-8" dir="rtl">
       <h2 className="font-fredoka text-2xl mb-4 text-choco">מומלצים</h2>
-      <div className="flex flex-col gap-4">
-        {picks.map((pick) => (
-          <div className="flex items-center gap-4 p-3 rounded-xl bg-pastelYellow/20" key={pick.id}>
-            <img src={pick.img} alt={pick.label} className="w-16 h-16 object-cover rounded-xl border-2 border-pastelYellow shadow" />
-            <div>
-              <div className="flex items-center gap-2 font-fredoka text-lg text-choco flex-row">
-                {pick.icon}
-                <span>{pick.label}</span>
+      {isError || !recipes || recipes.length === 0 ? (
+        <p className="text-choco/80">לא נמצאו מתכונים מומלצים כרגע.</p>
+      ) : (
+        <div className="flex flex-col gap-4">
+          {recipes.map((recipe) => (
+            <div className="flex items-center gap-4 p-3 rounded-xl bg-pastelYellow/20" key={recipe.id}>
+              <img 
+                src={recipe.image_url || `https://via.placeholder.com/150/f0e0d0/a08070?text=${encodeURIComponent(recipe.name)}`} 
+                alt={recipe.name} 
+                className="w-16 h-16 object-cover rounded-xl border-2 border-pastelYellow shadow" 
+              />
+              <div className="flex-1">
+                <div className="flex items-center gap-2 font-fredoka text-lg text-choco flex-row">
+                  <span>{recipe.name}</span>
+                </div>
+                <div className="text-choco/80 text-sm">{recipe.description}</div>
               </div>
-              <div className="text-choco/80 text-sm">{pick.desc}</div>
+              <Button
+                asChild
+                size="sm"
+                className="mr-auto bg-pastelBlue hover:bg-pastelBlue/90 text-choco font-bold shrink-0"
+              >
+                <Link to={`/recipe/${recipe.id}`}>
+                  הצג מתכון
+                </Link>
+              </Button>
             </div>
-            <Button
-              asChild
-              size="sm"
-              className="mr-auto bg-pastelBlue hover:bg-pastelBlue/90 text-choco font-bold"
-            >
-              <Link to={`/recipe/${pick.id}`}>
-                הצג מתכון
-              </Link>
-            </Button>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </section>
   );
 };
