@@ -9,16 +9,14 @@ const Index = () => {
   return (
     <main className="min-h-screen w-full flex flex-col" style={{background: "#faf9f7", direction: "rtl"}}>
       {/* Header / Navbar */}
-      <header className="w-full flex items-center justify-between py-7 px-8 bg-white border-b border-gray-100 shadow-sm flex-row" dir="rtl">
-        {/* Main title and logo on the right */}
+      <header className="w-full flex items-center justify-between py-7 px-8 bg-white border-b border-gray-100 shadow-sm flex-row-reverse">
         <div className="flex items-center gap-3 flex-row-reverse">
           <div className="w-10 h-10 rounded-full bg-pastelYellow flex items-center justify-center font-fredoka text-xl shadow-inner border">
             מ
           </div>
           <span className="font-fredoka text-2xl text-choco tracking-tight">ספר המתכונים של מיקה</span>
         </div>
-        {/* Categories navigation on the left */}
-        <nav className="flex gap-7 font-fredoka text-choco text-lg flex-row">
+        <nav className="flex gap-7 font-fredoka text-choco text-lg flex-row-reverse">
           <a className="hover:text-pastelOrange transition" href="#">בית</a>
           <a className="hover:text-pastelOrange transition" href="#">על מיקה</a>
           <a className="hover:text-pastelOrange transition" href="#">קטגוריות</a>
