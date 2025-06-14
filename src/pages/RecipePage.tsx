@@ -167,7 +167,11 @@ const RecipePage: React.FC = () => {
               </h2>
               <ol className="list-decimal list-inside space-y-2 text-choco/90 w-full">
                 {instructionsArray.map((step, index) => (
-                  <li key={index} className="leading-relaxed p-2 bg-pastelBlue/10 rounded-md">{step}</li>
+                  <li
+                    key={index}
+                    className="leading-relaxed p-2 bg-pastelBlue/10 rounded-md"
+                    dangerouslySetInnerHTML={{ __html: step }}
+                  />
                 ))}
               </ol>
             </CardFooter>
