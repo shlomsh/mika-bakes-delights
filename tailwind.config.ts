@@ -19,6 +19,10 @@ export default {
     'text-pastelBlue',
     'bg-pastelYellow/20',
     'bg-pastelOrange/20',
+    // Add new colors from DB to ensure they are generated
+    'bg-rose-200',
+    'bg-pink-200',
+    'bg-red-200',
   ],
   theme: {
     container: {
@@ -34,10 +38,10 @@ export default {
         inter: ['Inter', 'sans-serif']
       },
       colors: {
-        pastelYellow: "#ffe49e",
-        pastelBlue: "#b4dcff",
-        pastelOrange: "#ffb997",
-        pastelGreen: "#bbf7d0",
+        pastelYellow: "#fecaca", // red-200
+        pastelBlue: "#fbcfe8",   // pink-200
+        pastelOrange: "#fecdd3", // rose-200
+        pastelGreen: "#f0abfc",  // fuchsia-300
         choco: "#614e3e",
         'off-white': '#faf9f7',
       },
