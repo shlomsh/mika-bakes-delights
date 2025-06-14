@@ -26,12 +26,12 @@ const Index = () => {
         <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 sm:gap-7 font-fredoka text-choco text-lg flex-row-reverse sm:flex-nowrap">
           <a className="hover:text-pastelOrange transition" href="#">בית</a>
           <a className="hover:text-pastelOrange transition" href="#">על מיקה</a>
-          <DropdownMenu>
+          <DropdownMenu dir="rtl">
             <DropdownMenuTrigger className="flex items-center gap-1 hover:text-pastelOrange transition outline-none">
               קטגוריות
               <ChevronDown className="w-4 h-4" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent dir="rtl">
+            <DropdownMenuContent>
               {categories.map((category) => (
                 <DropdownMenuItem key={category.slug} asChild>
                   <Link to={`/category/${category.slug}`}>
