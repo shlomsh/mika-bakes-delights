@@ -29,7 +29,8 @@ export const useCategories = () => {
   const createMutation = useMutation<void, Error, CategoryFormValues>({
     mutationFn: async (values) => {
       const payload: TablesInsert<'categories'> = {
-        ...values,
+        name: values.name,
+        slug: values.slug,
         description: values.description ?? null,
         color: values.color ?? null,
         icon: values.icon ?? null,
@@ -48,7 +49,8 @@ export const useCategories = () => {
   const updateMutation = useMutation<void, Error, { values: CategoryFormValues, id: string }>({
     mutationFn: async ({ values, id }) => {
       const payload: TablesUpdate<'categories'> = {
-        ...values,
+        name: values.name,
+        slug: values.slug,
         description: values.description ?? null,
         color: values.color ?? null,
         icon: values.icon ?? null,
