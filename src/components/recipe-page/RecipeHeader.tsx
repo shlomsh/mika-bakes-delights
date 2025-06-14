@@ -39,7 +39,7 @@ const RecipeHeader: React.FC<RecipeHeaderProps> = ({ recipe, isAuthenticated, is
       <div className="flex items-center gap-4">
         {isAuthenticated && (
           <>
-            <Button variant="outline" className="text-choco border-choco hover:bg-choco/10" onClick={onEdit}>
+            <Button variant="outline" onClick={onEdit}>
               <Pencil className="ml-2 h-4 w-4" />
               ערוך מתכון
             </Button>
@@ -70,7 +70,7 @@ const RecipeHeader: React.FC<RecipeHeaderProps> = ({ recipe, isAuthenticated, is
             </AlertDialog>
           </>
         )}
-        <Button asChild variant="outline" className="text-choco border-choco hover:bg-choco/10">
+        <Button asChild variant="outline">
           <Link to="/">
             <ArrowRight className="ml-2 h-4 w-4" />
             חזרה לדף הבית
