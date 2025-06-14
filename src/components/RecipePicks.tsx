@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -17,8 +16,7 @@ const fetchRecommendedRecipes = async (): Promise<RecipePick[]> => {
   const { data, error } = await supabase
     .from('recipes')
     .select('id, name, description, image_url')
-    .eq('recommended', true)
-    .limit(2);
+    .eq('recommended', true);
 
   if (error) {
     console.error('Error fetching recommended recipes:', error);
