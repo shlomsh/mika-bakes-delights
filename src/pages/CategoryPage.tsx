@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowRight, BookOpen } from 'lucide-react';
 import { Recipe, Category } from '@/data/sampleRecipes';
-import { type Json } from "@/integrations/supabase/types";
 
 const fetchCategoryAndRecipes = async (categorySlug: string | undefined): Promise<{ category: Category | null; recipes: Recipe[] }> => {
   if (!categorySlug) {
@@ -33,8 +32,6 @@ const fetchCategoryAndRecipes = async (categorySlug: string | undefined): Promis
       name,
       description,
       image_url,
-      ingredients,
-      instructions,
       category_id,
       created_at,
       updated_at,
@@ -76,7 +73,6 @@ const CategoryPage: React.FC = () => {
   const formattedCategoryName = category
     ? category.name
     : categoryName?.replace('-', ' ') || 'קטגוריה';
-
 
   if (isLoading) {
     return (

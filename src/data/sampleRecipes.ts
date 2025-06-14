@@ -13,8 +13,6 @@ export interface Recipe {
   name: string;
   description: string | null;
   image_url: string | null;
-  ingredients: Json | null; // Changed to Json | null to match Supabase
-  instructions: string | null;
   category_id: string | null;
   created_at?: string;
   updated_at?: string;
