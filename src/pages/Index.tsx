@@ -12,20 +12,8 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 
-import { Plus } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { Button } from "@/components/ui/button";
 import type { Tables } from "@/integrations/supabase/types";
 import CategoryForm, { categoryFormSchema } from "@/components/CategoryForm";
 import { useToast } from "@/components/ui/use-toast";
@@ -42,22 +30,15 @@ const Index = () => {
   const { 
     categories, 
     isLoadingCategories, 
-    createCategory, 
     updateCategory, 
-    deleteCategory 
   } = useCategories();
 
   const [isFormOpen, setFormOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
-  const [deletingCategory, setDeletingCategory] = useState<Category | null>(null);
 
   const handleEdit = (category: Category) => {
     setEditingCategory(category);
     setFormOpen(true);
-  };
-
-  const handleDelete = (category: Category) => {
-    setDeletingCategory(category);
   };
 
   const handleFormSubmit = (values: CategoryFormValues) => {
@@ -69,30 +50,7 @@ const Index = () => {
           setEditingCategory(null);
         }
       });
-    } else {
-      createCategory.mutate(values, {
-        onSuccess: () => {
-          toast({ title: "הצלחה!", description: "הקטגוריה נוצרה בהצלחה." });
-          setFormOpen(false);
-        }
-      });
     }
-  };
-
-  const handleDeleteConfirm = () => {
-    if (deletingCategory) {
-      deleteCategory.mutate(deletingCategory.id, {
-        onSuccess: () => {
-          toast({ title: "הצלחה!", description: "הקטגוריה נמחקה בהצלחה." });
-          setDeletingCategory(null);
-        }
-      });
-    }
-  };
-
-  const handleAddNew = () => {
-    setEditingCategory(null);
-    setFormOpen(true);
   };
 
   return (
@@ -110,17 +68,11 @@ const Index = () => {
         <div className="hidden lg:block">
           <div className="flex justify-between items-center mb-4">
             <h2 className="font-fredoka text-2xl text-choco">קטגוריות</h2>
-            {isAuthenticated && (
-              <Button onClick={handleAddNew}>
-                <Plus className="ml-2 h-4 w-4" /> הוסף קטגוריה
-              </Button>
-            )}
           </div>
           {isLoadingCategories ? <p>טוען קטגוריות...</p> : 
             <CategoryCards 
               categories={categories || []}
               onEdit={handleEdit}
-              onDelete={handleDelete}
             />
           }
         </div>
@@ -129,17 +81,11 @@ const Index = () => {
       <div className="block lg:hidden px-8 py-4">
         <div className="flex justify-between items-center mb-4">
           <h2 className="font-fredoka text-2xl text-choco">קטגוריות</h2>
-          {isAuthenticated && (
-            <Button onClick={handleAddNew}>
-              <Plus className="ml-2 h-4 w-4" /> הוסף קטגוריה
-            </Button>
-          )}
         </div>
         {isLoadingCategories ? <p>טוען קטגוריות...</p> : 
           <CategoryCards 
             categories={categories || []}
             onEdit={handleEdit}
-            onDelete={handleDelete}
           />
         }
       </div>
@@ -147,39 +93,19 @@ const Index = () => {
       <Dialog open={isFormOpen} onOpenChange={(isOpen) => { if (!isOpen) setEditingCategory(null); setFormOpen(isOpen); }}>
         <DialogContent style={{ direction: 'rtl' }}>
           <DialogHeader>
-            <DialogTitle>{editingCategory ? 'עריכת קטגוריה' : 'הוספת קטגוריה חדשה'}</DialogTitle>
+            <DialogTitle>עריכת קטגוריה</DialogTitle>
             <DialogDescription>
-              {editingCategory ? `ערוך את פרטי הקטגוריה "${editingCategory.name}".` : 'מלא את הפרטים כדי להוסיף קטגוריה חדשה.'}
+              {editingCategory ? `ערוך את פרטי הקטגוריה "${editingCategory.name}".` : ''}
             </DialogDescription>
           </DialogHeader>
           <CategoryForm 
             category={editingCategory}
             onSubmit={handleFormSubmit}
-            isSubmitting={createCategory.isPending || updateCategory.isPending}
+            isSubmitting={updateCategory.isPending}
           />
         </DialogContent>
       </Dialog>
       
-      <AlertDialog open={!!deletingCategory} onOpenChange={(isOpen) => !isOpen && setDeletingCategory(null)}>
-        <AlertDialogContent style={{ direction: 'rtl' }}>
-          <AlertDialogHeader>
-            <AlertDialogTitle>האם אתה בטוח?</AlertDialogTitle>
-            <AlertDialogDescription>
-              פעולה זו תמחק את הקטגוריה "{deletingCategory?.name}". לא ניתן לשחזר פעולה זו.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setDeletingCategory(null)}>ביטול</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDeleteConfirm}
-              disabled={deleteCategory.isPending}
-              className="bg-red-600 hover:bg-red-700"
-            >
-              {deleteCategory.isPending ? "מוחק..." : "מחק"}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </main>
   );
 };

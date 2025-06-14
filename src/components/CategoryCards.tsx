@@ -5,7 +5,7 @@ import DynamicIcon from "./DynamicIcon";
 import { useAuth } from "@/hooks/useAuth";
 import type { Tables } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
-import { MoreVertical, Edit, Trash2 } from "lucide-react";
+import { MoreVertical, Edit } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,10 +18,9 @@ type Category = Tables<'categories'>;
 interface CategoryCardsProps {
   categories: Category[];
   onEdit: (category: Category) => void;
-  onDelete: (category: Category) => void;
 }
 
-const CategoryCards: React.FC<CategoryCardsProps> = ({ categories, onEdit, onDelete }) => {
+const CategoryCards: React.FC<CategoryCardsProps> = ({ categories, onEdit }) => {
   const { isAuthenticated } = useAuth();
 
   return (
@@ -50,10 +49,6 @@ const CategoryCards: React.FC<CategoryCardsProps> = ({ categories, onEdit, onDel
                   <DropdownMenuItem onClick={() => onEdit(cat)}>
                     <Edit className="ml-2 h-4 w-4" />
                     ערוך
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onDelete(cat)} className="text-red-500 focus:text-red-500 focus:bg-red-50">
-                    <Trash2 className="ml-2 h-4 w-4" />
-                    מחק
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

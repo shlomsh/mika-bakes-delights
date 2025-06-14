@@ -1,3 +1,4 @@
+
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
@@ -26,26 +27,6 @@ export const useCategories = () => {
     queryFn: fetchCategories,
   });
 
-  const createMutation = useMutation<void, Error, CategoryFormValues>({
-    mutationFn: async (values) => {
-      const payload: TablesInsert<'categories'> = {
-        name: values.name,
-        slug: values.slug,
-        description: values.description ?? null,
-        color: values.color ?? null,
-        icon: values.icon ?? null,
-      };
-      const { error } = await supabase.from('categories').insert(payload);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
-    },
-    onError: (err: Error) => {
-      toast({ variant: "destructive", title: "שגיאה", description: `יצירת הקטגוריה נכשלה: ${err.message}` });
-    },
-  });
-
   const updateMutation = useMutation<void, Error, { values: CategoryFormValues, id: string }>({
     mutationFn: async ({ values, id }) => {
       const payload: TablesUpdate<'categories'> = {
@@ -66,24 +47,9 @@ export const useCategories = () => {
     },
   });
 
-  const deleteMutation = useMutation<void, Error, string>({
-    mutationFn: async (categoryId: string) => {
-      const { error } = await supabase.from('categories').delete().eq('id', categoryId);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
-    },
-    onError: (err: Error) => {
-      toast({ variant: "destructive", title: "שגיאה", description: `מחיקת הקטגוריה נכשלה: ${err.message}` });
-    },
-  });
-
   return {
     categories,
     isLoadingCategories,
-    createCategory: createMutation,
     updateCategory: updateMutation,
-    deleteCategory: deleteMutation,
   };
 };
