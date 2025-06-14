@@ -5,19 +5,19 @@ import { Cake, Utensils, BookOpen } from "lucide-react";
 const categories = [
   {
     label: "קינוחים",
-    color: "bg-pastelBlue",
+    color: "bg-rose-200",
     icon: Cake,
     desc: "עוגות, עוגיות, פודינגים וטעמים מתוקים לילדים ולמבוגרים"
   },
   {
     label: "מאפים מלוחים",
-    color: "bg-pastelOrange",
+    color: "bg-pink-100",
     icon: Utensils,
     desc: "בצקים, לחמים, פשטידות ומגוון מאפים שאוהבים"
   },
   {
     label: "תבשילים",
-    color: "bg-pastelGreen",
+    color: "bg-rose-100",
     icon: BookOpen,
     desc: "מנות ביתיות, תבשילי משפחה ומאכלים מנחמים"
   }
