@@ -20,10 +20,6 @@ const MikaHero: React.FC = () => <section className="relative bg-pastelYellow ro
       <p className="mt-2 text-lg text-choco text-right max-w-lg font-inter">
         מיקה היא בת ה-14 של המשפחה וכבר אלופה גדולה במטבח! האהבה הכי גדולה שלה היא <span className="font-bold text-orange-400">קונדיטוריה</span> ו-<span className="font-bold text-pastelYellow">מאפים</span>. כאן תמצאו את כל המתכונים הכי שווים שלה – מתוקים, מלוחים וביתיים.
       </p>
-      <div className="hidden lg:block mt-8 opacity-70 text-choco text-sm">
-        {/* עיצוב ותמונה בהשראת תמונת עוגיות שוקולד צ׳יפס */}
-        התמונה מהווה השראה לעיצוב – עוגיות שוקולד צ׳יפס
-      </div>
     </div>
   </section>;
 export default MikaHero;
