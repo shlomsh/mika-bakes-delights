@@ -88,16 +88,23 @@ const CategoryPage: React.FC = () => {
   if (error || !category) {
     return (
       <div className="min-h-screen w-full flex flex-col items-center p-8" style={{ background: "#faf9f7", direction: "rtl" }}>
-        <header className="w-full max-w-4xl mb-10 flex justify-between items-center">
-          <h1 className="font-fredoka text-3xl text-choco">
+        <header className="w-full max-w-4xl mb-10 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+          <h1 className="font-fredoka text-3xl text-choco w-full text-right sm:w-auto">
             קטגוריה לא נמצאה
           </h1>
-          <Button asChild variant="outline" className="text-choco border-choco hover:bg-choco/10">
-            <Link to="/">
-              <ArrowRight className="ml-2 h-4 w-4" />
-              חזרה לדף הבית
-            </Link>
-          </Button>
+          <div className="flex self-end sm:self-auto">
+            <Button asChild variant="outline" className="text-choco border-choco hover:bg-choco/10 hidden sm:inline-flex">
+              <Link to="/">
+                <ArrowRight className="ml-2 h-4 w-4" />
+                חזרה לדף הבית
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="icon" className="text-choco border-choco hover:bg-choco/10 sm:hidden">
+                <Link to="/" aria-label="חזרה לדף הבית">
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+            </Button>
+          </div>
         </header>
         <main className="w-full max-w-4xl">
           <p className="text-choco/80 text-lg text-center">
@@ -110,23 +117,41 @@ const CategoryPage: React.FC = () => {
   
   return (
     <div className="min-h-screen w-full flex flex-col items-center p-8" style={{ background: "#faf9f7", direction: "rtl" }}>
-      <header className="w-full max-w-4xl mb-10 flex justify-between items-center">
-        <h1 className="font-fredoka text-3xl text-choco">
+      <header className="w-full max-w-4xl mb-10 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <h1 className="font-fredoka text-3xl text-choco w-full text-right sm:w-auto">
           מתכונים בקטגוריית: {formattedCategoryName}
         </h1>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4 self-end sm:self-auto">
           {isAuthenticated && (
-             <Button asChild>
-                <Link to={`/new-recipe?categoryId=${category.id}`}>
-                  <Plus className="ml-2 h-4 w-4" />
-                  הוסף מתכון
-                </Link>
-              </Button>
+             <>
+                {/* Desktop Add Recipe Button */}
+                <Button asChild className="hidden sm:inline-flex">
+                    <Link to={`/new-recipe?categoryId=${category.id}`}>
+                      <Plus className="ml-2 h-4 w-4" />
+                      הוסף מתכון
+                    </Link>
+                </Button>
+                {/* Mobile Add Recipe Button */}
+                <Button asChild size="icon" className="sm:hidden">
+                    <Link to={`/new-recipe?categoryId=${category.id}`} aria-label="הוסף מתכון">
+                      <Plus className="h-4 w-4" />
+                    </Link>
+                </Button>
+             </>
           )}
-          <Button asChild variant="outline" className="text-choco border-choco hover:bg-choco/10">
+          
+          {/* Desktop Back Button */}
+          <Button asChild variant="outline" className="text-choco border-choco hover:bg-choco/10 hidden sm:inline-flex">
             <Link to="/">
               <ArrowRight className="ml-2 h-4 w-4" />
               חזרה לדף הבית
+            </Link>
+          </Button>
+
+          {/* Mobile Back Button */}
+          <Button asChild variant="outline" size="icon" className="text-choco border-choco hover:bg-choco/10 sm:hidden">
+            <Link to="/" aria-label="חזרה לדף הבית">
+              <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
         </div>
