@@ -121,6 +121,21 @@ async function updateRecipeInDb({ recipeId, values }: { recipeId: string, values
     const { error: insertInstructionsError } = await supabase.from('recipe_instructions').insert(newInstructions);
     if (insertInstructionsError) throw insertInstructionsError;
   }
+
+  // Log the update
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+      const { error: logError } = await supabase.from('recipe_update_logs').insert({
+          recipe_id: recipeId,
+          user_id: user.id,
+          changes: values as any,
+      });
+
+      if (logError) {
+          // Log failure should not fail the entire operation, just log it to console.
+          console.error("Failed to log recipe update:", logError);
+      }
+  }
 }
 
 const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSaveSuccess }) => {

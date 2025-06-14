@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { ArrowRight, ChefHat, ListChecks, Utensils, Pencil } from 'lucide-react';
 import { Recipe as BaseRecipe } from '@/data/sampleRecipes';
 import RecipeEditForm from '@/components/RecipeEditForm';
+import RecipeUpdateLogs from '@/components/RecipeUpdateLogs';
 
 interface Ingredient {
   description: string;
@@ -201,6 +202,7 @@ const RecipePage: React.FC = () => {
             </CardFooter>
           )}
         </Card>
+        <RecipeUpdateLogs recipeId={recipe.id} />
       </main>
     </div>
   );

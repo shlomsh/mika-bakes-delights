@@ -97,6 +97,38 @@ export type Database = {
           },
         ]
       }
+      recipe_update_logs: {
+        Row: {
+          changes: Json | null
+          created_at: string
+          id: string
+          recipe_id: string
+          user_id: string | null
+        }
+        Insert: {
+          changes?: Json | null
+          created_at?: string
+          id?: string
+          recipe_id: string
+          user_id?: string | null
+        }
+        Update: {
+          changes?: Json | null
+          created_at?: string
+          id?: string
+          recipe_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipe_update_logs_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       recipes: {
         Row: {
           category_id: string | null
