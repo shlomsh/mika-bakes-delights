@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardFooter } from '@/components/ui/card';
-import { ListChecks, Utensils, Blend, Sparkles } from 'lucide-react';
+import { ListChecks, Utensils, Soup, Sparkles } from 'lucide-react';
 import { RecipeWithDetails } from './types';
 
 interface RecipeContentProps {
@@ -41,19 +41,6 @@ const RecipeContent: React.FC<RecipeContentProps> = ({ recipe }) => {
                 </ul>
               </div>
             )}
-            {recipe.recipe_sauces && recipe.recipe_sauces.length > 0 && (
-              <div className="mb-6">
-                <h2 className="font-fredoka text-xl text-choco mb-2 flex items-center">
-                  <Blend className="mr-2 text-pastelOrange" />
-                  רוטב:
-                </h2>
-                <ul className="list-disc list-inside space-y-1 text-choco/90 bg-pastelYellow/20 p-4 rounded-md">
-                  {recipe.recipe_sauces.map((step) => (
-                    <li key={step.step_number}>{step.description}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
             {recipe.recipe_garnishes && recipe.recipe_garnishes.length > 0 && (
               <div className="mb-6">
                 <h2 className="font-fredoka text-xl text-choco mb-2 flex items-center">
@@ -71,7 +58,7 @@ const RecipeContent: React.FC<RecipeContentProps> = ({ recipe }) => {
         </div>
       </div>
       {recipe.recipe_instructions && recipe.recipe_instructions.length > 0 && (
-        <CardFooter className="flex-col items-start p-6 bg-white rounded-b-lg border-t border-choco/10">
+        <CardFooter className="flex-col items-start p-6 bg-white border-t border-choco/10">
           <h2 className="font-fredoka text-xl text-choco mb-4 flex items-center">
             <Utensils className="mr-2 text-pastelBlue" />
             אופן ההכנה:
@@ -89,6 +76,19 @@ const RecipeContent: React.FC<RecipeContentProps> = ({ recipe }) => {
               </li>
             ))}
           </ol>
+        </CardFooter>
+      )}
+      {recipe.recipe_sauces && recipe.recipe_sauces.length > 0 && (
+        <CardFooter className="flex-col items-start p-6 bg-white rounded-b-lg border-t border-choco/10">
+          <h2 className="font-fredoka text-xl text-choco mb-2 flex items-center">
+            <Soup className="mr-2 text-pastelOrange" />
+            רוטב:
+          </h2>
+          <ul className="w-full list-disc list-inside space-y-1 text-choco/90 bg-pastelYellow/20 p-4 rounded-md">
+            {recipe.recipe_sauces.map((step) => (
+              <li key={step.step_number}>{step.description}</li>
+            ))}
+          </ul>
         </CardFooter>
       )}
     </Card>
