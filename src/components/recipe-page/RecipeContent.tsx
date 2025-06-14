@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardFooter } from '@/components/ui/card';
 import { ListChecks, Utensils, Soup, Sparkles } from 'lucide-react';
@@ -90,7 +91,7 @@ const RecipeContent: React.FC<RecipeContentProps> = ({ recipe }) => {
                 <ListChecks className="mr-2 text-pastelOrange" />
                 מצרכים לרוטב:
               </h3>
-              <ul className="list-disc list-inside space-y-1 text-choco/90 bg-pastelYellow/20 p-4 rounded-md">
+              <ul className="list-disc list-inside space-y-1 text-choco/90 bg-pastelOrange/20 p-4 rounded-md">
                 {recipe.recipe_sauce_ingredients.map((ingredient, index) => (
                   <li key={index}>{ingredient.description}</li>
                 ))}
