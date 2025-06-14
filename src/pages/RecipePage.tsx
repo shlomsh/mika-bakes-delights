@@ -8,10 +8,9 @@ import { ArrowRight, ChefHat, ListChecks, Utensils } from 'lucide-react';
 import { Recipe } from '@/data/sampleRecipes'; // Assuming Recipe type is here
 import { type Json } from "@/integrations/supabase/types";
 
-const fetchRecipeById = async (recipeId: string | undefined): Promise<Recipe | null> => {
-  if (!recipeId) {
-    return null;
-  }
+const fetchRecipeById = async (recipeId: string): Promise<Recipe | null> => {
+  // recipeId is now asserted to be a string when this function is called by useQuery
+  // No need for: if (!recipeId) return null; as queryFn won't run if key has null.
 
   const { data, error } = await supabase
     .from('recipes')
@@ -32,7 +31,7 @@ const fetchRecipeById = async (recipeId: string | undefined): Promise<Recipe | n
       )
     `)
     .eq('id', recipeId)
-    .single(); // Use single as we expect one recipe or null
+    .single(); 
 
   if (error) {
     console.error('Error fetching recipe:', error);
@@ -42,28 +41,37 @@ const fetchRecipeById = async (recipeId: string | undefined): Promise<Recipe | n
 };
 
 const RecipePage: React.FC = () => {
-  const { recipeId } = useParams<{ recipeId: string }>();
+  const { recipeId } = useParams<{ recipeId: string }>(); // recipeId can be undefined initially
 
   const { data: recipe, isLoading, error } = useQuery({
-    queryKey: ['recipe', recipeId],
-    queryFn: () => fetchRecipeById(recipeId),
-    enabled: !!recipeId,
+    // Use null in queryKey to disable query if recipeId is undefined/falsy
+    // This is often more stable for hook counts than toggling 'enabled'.
+    queryKey: ['recipe', recipeId || null], 
+    queryFn: () => {
+      // queryFn will only execute if recipeId is truthy (not null in key)
+      // So, recipeId can be safely asserted as string here.
+      if (!recipeId) return Promise.resolve(null); // Defensive, though should not be hit if key is null
+      return fetchRecipeById(recipeId);
+    },
+    // Remove 'enabled: !!recipeId' as null in queryKey handles this.
   });
 
-  // Move useMemo hooks to the top level, before conditional returns.
-  // Handle cases where 'recipe' might be null or undefined.
   const ingredientsArray = React.useMemo(() => {
     if (!recipe || !recipe.ingredients) return [];
     if (Array.isArray(recipe.ingredients)) return recipe.ingredients as string[];
-    // Add more parsing logic if ingredients can be objects or other types
     console.warn("Recipe ingredients are in an unexpected format:", recipe.ingredients);
     return [];
-  }, [recipe]);
+  }, [recipe]); // Keep dependency on 'recipe' as a whole for simplicity here
 
   const instructionsArray = React.useMemo(() => {
     if (!recipe || !recipe.instructions) return [];
+    // Ensure instructions is a string before calling split
+    if (typeof recipe.instructions !== 'string') {
+        console.warn("Recipe instructions are not a string:", recipe.instructions);
+        return [];
+    }
     return recipe.instructions.split('\n').filter(line => line.trim() !== '');
-  }, [recipe]);
+  }, [recipe]); // Keep dependency on 'recipe' as a whole
 
   if (isLoading) {
     return (
