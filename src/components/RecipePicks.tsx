@@ -7,7 +7,7 @@ const picks = [
     label: "עלי גפן",
     desc: "עלי גפן ממולאים באורז וירקות, מתכון משפחתי",
     price: "₪6.50 למנה", // Updated price
-    img: "https://images.unsplash.com/photo-1597208131432-3495f38f5eba?auto=format&fit=crop&w=256&h=256&q=80", // Placeholder for grape leaves
+    img: "/lovable-uploads/1ccfb5d5-09ee-4b54-8cdc-7af66df9703b.png", // Updated image for grape leaves
     icon: <Leaf className="w-5 h-5 text-green-600" /> // Changed icon
   },
   {
@@ -41,4 +41,3 @@ const RecipePicks: React.FC = () => (
 );
 
 export default RecipePicks;
-
