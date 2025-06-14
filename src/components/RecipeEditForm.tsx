@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -38,6 +37,7 @@ type RecipeWithDetails = Omit<BaseRecipe, 'ingredients' | 'instructions'> & {
 const formSchema = z.object({
   name: z.string().min(3, { message: "שם המתכון חייב להכיל לפחות 3 תווים." }),
   description: z.string().optional(),
+  image_file: z.instanceof(FileList).optional(),
   ingredients: z.array(z.object({
     description: z.string().min(1, { message: "תיאור המרכיב לא יכול להיות ריק." })
   })),
@@ -55,12 +55,45 @@ interface RecipeEditFormProps {
 }
 
 async function updateRecipeInDb({ recipeId, values }: { recipeId: string, values: RecipeFormValues }) {
-  const { name, description, ingredients, instructions } = values;
+  const { name, description, ingredients, instructions, image_file } = values;
+
+  let newImageUrl: string | undefined = undefined;
+
+  if (image_file && image_file.length > 0) {
+    const file = image_file[0];
+    const fileExt = file.name.split('.').pop();
+    const filePath = `${recipeId}-${Date.now()}.${fileExt}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('recipe-images')
+      .upload(filePath, file, { upsert: true });
+
+    if (uploadError) {
+      console.error("Storage upload error:", uploadError);
+      throw new Error(`Storage error: ${uploadError.message}`);
+    }
+
+    const { data: urlData } = supabase.storage
+      .from('recipe-images')
+      .getPublicUrl(filePath);
+
+    newImageUrl = urlData.publicUrl;
+  }
+
+  const recipeUpdateData: { name: string; description?: string | null; image_url?: string } = {
+    name,
+    description: values.description || null,
+  };
+
+  if (newImageUrl) {
+    recipeUpdateData.image_url = newImageUrl;
+  }
 
   const { error: recipeError } = await supabase
     .from('recipes')
-    .update({ name, description })
+    .update(recipeUpdateData)
     .eq('id', recipeId);
+
   if (recipeError) throw recipeError;
 
   const { error: deleteIngredientsError } = await supabase.from('recipe_ingredients').delete().eq('recipe_id', recipeId);
@@ -92,6 +125,7 @@ async function updateRecipeInDb({ recipeId, values }: { recipeId: string, values
 
 const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSaveSuccess }) => {
   const { toast } = useToast();
+  const [imagePreview, setImagePreview] = React.useState<string | null>(recipe.image_url);
   
   const form = useForm<RecipeFormValues>({
     resolver: zodResolver(formSchema),
@@ -102,6 +136,8 @@ const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSav
       instructions: recipe.recipe_instructions.map(i => ({ description: i.description })),
     },
   });
+
+  const { onChange: onImageChange, ...restImageRegister } = form.register("image_file");
 
   const { fields: ingredientFields, append: appendIngredient, remove: removeIngredient } = useFieldArray({
     control: form.control, name: "ingredients"
@@ -155,6 +191,38 @@ const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSav
                     <FormItem>
                       <FormLabel>תיאור</FormLabel>
                       <FormControl><Textarea {...field} /></FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="image_file"
+                  render={() => (
+                    <FormItem>
+                      <FormLabel>תמונת מתכון</FormLabel>
+                      {imagePreview && (
+                        <div className="mt-2">
+                          <img src={imagePreview} alt="תצוגה מקדימה" className="w-full max-w-sm rounded-md object-cover" />
+                        </div>
+                      )}
+                      <FormControl>
+                        <Input 
+                          type="file" 
+                          accept="image/*"
+                          {...restImageRegister}
+                          onChange={(event) => {
+                            onImageChange(event);
+                            const file = event.target.files?.[0];
+                            if (file) {
+                              setImagePreview(URL.createObjectURL(file));
+                            } else {
+                              setImagePreview(recipe.image_url);
+                            }
+                          }}
+                        />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
