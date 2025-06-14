@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -169,7 +170,7 @@ const RecipePage: React.FC = () => {
                 {instructionsArray.map((step, index) => (
                   <li
                     key={index}
-                    className="leading-relaxed p-2 bg-pastelBlue/10 rounded-md"
+                    className="leading-relaxed py-2 pr-3 pl-4 bg-pastelBlue/10 rounded-r-md border-l-4 border-pastelBlue"
                     dangerouslySetInnerHTML={{ __html: step }}
                   />
                 ))}
