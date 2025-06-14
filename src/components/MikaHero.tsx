@@ -15,10 +15,10 @@ const MikaHero: React.FC = () => <section className="relative bg-pastelYellow ro
       <span className="text-choco text-[2.7rem] font-fredoka font-extrabold leading-tight mb-6" style={{
       textShadow: '0 2px 0 #fff9ea'
     }}>
-        מיקה - שפית <span className="text-pastelOrange">צעירה</span> בת 14
+        מיקה - שפית <span className="text-orange-500">צעירה</span> בת 14
       </span>
       <p className="mt-2 text-lg text-choco text-right max-w-lg font-inter">
-        מיקה היא בת ה-14 של המשפחה וכבר אלופה גדולה במטבח! האהבה הכי גדולה שלה היא <span className="font-bold text-orange-500">קונדיטוריה</span> ו-<span className="font-bold text-pastelYellow">מאפים</span>. כאן תמצאו את כל המתכונים הכי שווים שלה – מתוקים, מלוחים וביתיים.
+        מיקה היא בת ה-14 של המשפחה וכבר אלופה גדולה במטבח! האהבה הכי גדולה שלה היא <span className="font-bold text-orange-500">קונדיטוריה</span> ו-<span className="font-bold text-orange-500">מאפים</span>. כאן תמצאו את כל המתכונים הכי שווים שלה – מתוקים, מלוחים וביתיים.
       </p>
     </div>
   </section>;
