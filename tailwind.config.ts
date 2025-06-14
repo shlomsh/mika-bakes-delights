@@ -15,6 +15,10 @@ export default {
     'bg-pastelYellow',
     'bg-pastelGreen',
     'bg-pastelBlue',
+    'text-pastelOrange',
+    'text-pastelBlue',
+    'bg-pastelYellow/20',
+    'bg-pastelOrange/20',
   ],
   theme: {
     container: {
@@ -47,3 +51,4 @@ export default {
   },
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;
+
