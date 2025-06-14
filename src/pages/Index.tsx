@@ -61,19 +61,6 @@ const Index = () => {
     >
       <AppHeader categories={categories} />
 
-      {/* On mobile, categories appear first */}
-      <div className="block lg:hidden px-8 py-4">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="font-fredoka text-2xl text-choco">קטגוריות</h2>
-        </div>
-        {isLoadingCategories ? <p>טוען קטגוריות...</p> : 
-          <CategoryCards 
-            categories={categories || []}
-            onEdit={handleEdit}
-          />
-        }
-      </div>
-
       {/* Main 2-column desktop grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 px-8 py-14 max-w-7xl mx-auto w-full flex-1 transition-all">
         {/* Main Hero & Picks (2 columns on desktop) */}
@@ -93,6 +80,19 @@ const Index = () => {
             />
           }
         </div>
+      </div>
+      
+      {/* On mobile, categories appear below the main content */}
+      <div className="block lg:hidden px-8 py-4">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="font-fredoka text-2xl text-choco">קטגוריות</h2>
+        </div>
+        {isLoadingCategories ? <p>טוען קטגוריות...</p> : 
+          <CategoryCards 
+            categories={categories || []}
+            onEdit={handleEdit}
+          />
+        }
       </div>
       
       <Dialog open={isFormOpen} onOpenChange={(isOpen) => { if (!isOpen) setEditingCategory(null); setFormOpen(isOpen); }}>
