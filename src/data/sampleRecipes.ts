@@ -1,3 +1,5 @@
+import { type Json } from "@/integrations/supabase/types"; // Import Json type
+
 export interface Category {
   id: string;
   slug: string;
@@ -11,9 +13,9 @@ export interface Recipe {
   name: string;
   description: string | null;
   image_url: string | null;
-  ingredients: string[] | Record<string, any> | null; // Can be an array of strings or a more structured object
+  ingredients: Json | null; // Changed to Json | null to match Supabase
   instructions: string | null;
-  category_id: string | null; // Can be null if category is deleted and ON DELETE SET NULL is used
+  category_id: string | null;
   created_at?: string;
   updated_at?: string;
   categories?: Category | null; // To hold joined category data if fetched

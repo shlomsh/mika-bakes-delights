@@ -1,12 +1,12 @@
-
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, BookOpen } from 'lucide-react'; // Added BookOpen for placeholder
-import { Recipe, Category } from '@/data/sampleRecipes'; // Import updated types
+import { ArrowRight, BookOpen } from 'lucide-react';
+import { Recipe, Category } from '@/data/sampleRecipes';
+import { type Json } from "@/integrations/supabase/types";
 
 const fetchCategoryAndRecipes = async (categorySlug: string | undefined): Promise<{ category: Category | null; recipes: Recipe[] }> => {
   if (!categorySlug) {
@@ -22,7 +22,6 @@ const fetchCategoryAndRecipes = async (categorySlug: string | undefined): Promis
 
   if (categoryError || !categoryData) {
     console.error('Error fetching category:', categoryError);
-    // If category not found, we can assume no recipes either, or handle as an error page
     return { category: null, recipes: [] };
   }
 
@@ -30,10 +29,21 @@ const fetchCategoryAndRecipes = async (categorySlug: string | undefined): Promis
   const { data: recipesData, error: recipesError } = await supabase
     .from('recipes')
     .select(`
-      *,
+      id,
+      name,
+      description,
+      image_url,
+      ingredients,
+      instructions,
+      category_id,
+      created_at,
+      updated_at,
       categories (
+        id,
         slug,
-        name
+        name,
+        created_at,
+        updated_at
       )
     `)
     .eq('category_id', categoryData.id);
@@ -43,8 +53,10 @@ const fetchCategoryAndRecipes = async (categorySlug: string | undefined): Promis
     return { category: categoryData, recipes: [] };
   }
   
-  // Ensure recipesData is not null and correctly typed
-  const recipes = recipesData || [];
+  // Ensure recipesData is not null. It should conform to Recipe[] due to the select and types.
+  // Type casting might be needed if Supabase types and frontend types diverge significantly,
+  // but the changes to Recipe interface and select statement should align them.
+  const recipes: Recipe[] = recipesData || [];
 
   return { category: categoryData, recipes };
 };
@@ -152,4 +164,3 @@ const CategoryPage: React.FC = () => {
 };
 
 export default CategoryPage;
-
