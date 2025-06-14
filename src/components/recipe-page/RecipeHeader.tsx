@@ -28,16 +28,23 @@ interface RecipeHeaderProps {
 const RecipeHeader: React.FC<RecipeHeaderProps> = ({ recipe, isAuthenticated, isDeletePending, onEdit, onDelete }) => {
   return (
     <header className="w-full max-w-5xl mb-6 md:mb-10 flex flex-col">
-      <div className="flex items-center gap-4 self-end mb-4 md:mb-6">
+      <div className="flex items-center gap-2 sm:gap-4 self-end mb-4 md:mb-6">
         {isAuthenticated && (
           <>
-            <Button variant="outline" onClick={onEdit}>
+            {/* Desktop Edit Button */}
+            <Button variant="outline" onClick={onEdit} className="hidden sm:inline-flex">
               <Pencil className="ml-2 h-4 w-4" />
               ערוך מתכון
             </Button>
+            {/* Mobile Edit Button */}
+            <Button variant="outline" size="icon" onClick={onEdit} className="sm:hidden" aria-label="ערוך מתכון">
+              <Pencil className="h-4 w-4" />
+            </Button>
+            
+            {/* Desktop Delete Button */}
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="destructive">
+                <Button variant="destructive" className="hidden sm:inline-flex">
                   <Trash2 className="ml-2 h-4 w-4" />
                   מחק מתכון
                 </Button>
@@ -60,12 +67,45 @@ const RecipeHeader: React.FC<RecipeHeaderProps> = ({ recipe, isAuthenticated, is
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
+
+            {/* Mobile Delete Button */}
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" size="icon" className="sm:hidden" aria-label="מחק מתכון">
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent style={{direction: 'rtl'}}>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>האם אתה בטוח?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    פעולה זו לא ניתנת לביטול. פעולה זו תמחק לצמיתות את המתכון מהשרתים שלנו.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>ביטול</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={onDelete}
+                    disabled={isDeletePending}
+                  >
+                    {isDeletePending ? "מוחק..." : "מחק"}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </>
         )}
-        <Button asChild variant="outline">
+        {/* Desktop Back Button */}
+        <Button asChild variant="outline" className="hidden sm:inline-flex">
           <Link to="/">
             <ArrowRight className="ml-2 h-4 w-4" />
             חזרה לדף הבית
+          </Link>
+        </Button>
+        {/* Mobile Back Button */}
+        <Button asChild variant="outline" size="icon" className="sm:hidden" aria-label="חזרה לדף הבית">
+          <Link to="/">
+            <ArrowRight className="h-4 w-4" />
           </Link>
         </Button>
         <AuthComponent />
