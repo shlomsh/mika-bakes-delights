@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import * as z from 'zod';
 
@@ -13,7 +12,6 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 
-import { useAuth } from "@/hooks/useAuth";
 import type { Tables } from "@/integrations/supabase/types";
 import CategoryForm, { categoryFormSchema } from "@/components/CategoryForm";
 import { useToast } from "@/components/ui/use-toast";
@@ -24,7 +22,6 @@ type Category = Tables<'categories'>;
 type CategoryFormValues = z.infer<typeof categoryFormSchema>;
 
 const Index = () => {
-  const { isAuthenticated } = useAuth();
   const { toast } = useToast();
   
   const { 
@@ -55,7 +52,7 @@ const Index = () => {
 
   return (
     <main className="min-h-screen w-full flex flex-col" style={{background: "#faf9f7", direction: "rtl"}}>
-      <AppHeader categories={categories} isAuthenticated={isAuthenticated} />
+      <AppHeader categories={categories} />
 
       {/* Main 2-column desktop grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 px-8 py-14 max-w-7xl mx-auto w-full flex-1 transition-all">

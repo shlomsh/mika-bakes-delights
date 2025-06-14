@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronDown, Plus } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,17 +9,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import AuthComponent from "@/components/Auth";
-import { Button } from "@/components/ui/button";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Category = Tables<'categories'>;
 
 interface AppHeaderProps {
   categories: Category[] | undefined;
-  isAuthenticated: boolean;
 }
 
-const AppHeader: React.FC<AppHeaderProps> = ({ categories, isAuthenticated }) => {
+const AppHeader: React.FC<AppHeaderProps> = ({ categories }) => {
   return (
     <header className="w-full flex flex-col sm:flex-row items-center sm:justify-between gap-4 sm:gap-0 py-4 px-6 bg-white border-b border-gray-100 shadow-sm">
       <div className="flex items-center gap-3 flex-row-reverse">
@@ -49,17 +47,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({ categories, isAuthenticated }) =>
           </DropdownMenu>
           <a className="hover:text-pastelOrange transition" href="#">מועדפים</a>
         </nav>
-        <div className="flex items-center gap-4">
-          {isAuthenticated && (
-            <Button asChild>
-              <Link to="/new-recipe">
-                <Plus className="ml-2 h-4 w-4" />
-                הוסף מתכון
-              </Link>
-            </Button>
-          )}
-          <AuthComponent />
-        </div>
+        <AuthComponent />
       </div>
     </header>
   );
