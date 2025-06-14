@@ -4,8 +4,9 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, BookOpen } from 'lucide-react';
+import { ArrowRight, BookOpen, Plus } from 'lucide-react';
 import { Recipe, Category } from '@/data/sampleRecipes';
+import { useAuth } from '@/hooks/useAuth';
 
 const fetchCategoryAndRecipes = async (categorySlug: string | undefined): Promise<{ category: Category | null; recipes: Recipe[] }> => {
   if (!categorySlug) {
@@ -60,6 +61,7 @@ const fetchCategoryAndRecipes = async (categorySlug: string | undefined): Promis
 
 const CategoryPage: React.FC = () => {
   const { categoryName } = useParams<{ categoryName: string }>();
+  const { isAuthenticated } = useAuth();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['category', categoryName],
@@ -111,12 +113,22 @@ const CategoryPage: React.FC = () => {
         <h1 className="font-fredoka text-3xl text-choco">
           מתכונים בקטגוריית: {formattedCategoryName}
         </h1>
-        <Button asChild variant="outline" className="text-choco border-choco hover:bg-choco/10">
-          <Link to="/">
-            <ArrowRight className="ml-2 h-4 w-4" />
-            חזרה לדף הבית
-          </Link>
-        </Button>
+        <div className="flex items-center gap-4">
+          {isAuthenticated && (
+             <Button asChild>
+                <Link to="/new-recipe">
+                  <Plus className="ml-2 h-4 w-4" />
+                  הוסף מתכון
+                </Link>
+              </Button>
+          )}
+          <Button asChild variant="outline" className="text-choco border-choco hover:bg-choco/10">
+            <Link to="/">
+              <ArrowRight className="ml-2 h-4 w-4" />
+              חזרה לדף הבית
+            </Link>
+          </Button>
+        </div>
       </header>
       <main className="w-full max-w-4xl">
         {recipesForCategory.length > 0 ? (
