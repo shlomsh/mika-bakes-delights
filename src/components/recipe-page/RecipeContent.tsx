@@ -34,7 +34,7 @@ const RecipeContent: React.FC<RecipeContentProps> = ({ recipe }) => {
                   <ListChecks className="mr-2 text-pastelOrange" />
                   מצרכים:
                 </h2>
-                <ul className="list-disc list-inside space-y-1 text-choco/90 bg-pastelYellow/20 p-4 rounded-md">
+                <ul className="list-disc list-outside space-y-1 text-choco/90 bg-pastelYellow/20 p-4 pr-6 rounded-md">
                   {recipe.recipe_ingredients.map((ingredient, index) => (
                     <li key={index}>{ingredient.description}</li>
                   ))}
@@ -47,7 +47,7 @@ const RecipeContent: React.FC<RecipeContentProps> = ({ recipe }) => {
                   <Sparkles className="mr-2 text-pastelYellow" />
                   תוספת:
                 </h2>
-                <ul className="list-disc list-inside space-y-1 text-choco/90 bg-pastelYellow/20 p-4 rounded-md">
+                <ul className="list-disc list-outside space-y-1 text-choco/90 bg-pastelYellow/20 p-4 pr-6 rounded-md">
                   {recipe.recipe_garnishes.map((step) => (
                     <li key={step.step_number}>{step.description}</li>
                   ))}
@@ -91,7 +91,7 @@ const RecipeContent: React.FC<RecipeContentProps> = ({ recipe }) => {
                 <ListChecks className="mr-2 text-pastelOrange" />
                 מצרכים לרוטב:
               </h3>
-              <ul className="list-disc list-inside space-y-1 text-choco/90 bg-pastelOrange/20 p-4 rounded-md">
+              <ul className="list-disc list-outside space-y-1 text-choco/90 bg-pastelOrange/20 p-4 pr-6 rounded-md">
                 {recipe.recipe_sauce_ingredients.map((ingredient, index) => (
                   <li key={index}>{ingredient.description}</li>
                 ))}
