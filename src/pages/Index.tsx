@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -80,7 +81,7 @@ const Index = () => {
     },
   });
 
-  const updateMutation = useMutation<void, Error, CategoryFormValues>({
+  const updateMutation = useMutation<void, Error, Partial<CategoryFormValues>>({
     mutationFn: async (values) => {
       if (!editingCategory) return;
       const { error } = await supabase.from('categories').update(values).eq('id', editingCategory.id);
