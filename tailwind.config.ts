@@ -39,6 +39,7 @@ export default {
         pastelOrange: "#ffb997",
         pastelGreen: "#bbf7d0",
         choco: "#614e3e",
+        'off-white': '#faf9f7',
       },
       borderRadius: {
         ...{
@@ -51,4 +52,3 @@ export default {
   },
   plugins: [require("tailwindcss-animate")],
 } satisfies Config;
-
