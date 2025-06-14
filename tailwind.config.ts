@@ -10,6 +10,12 @@ export default {
     "./src/**/*.{ts,tsx}",
   ],
   prefix: "",
+  safelist: [
+    'bg-pastelOrange',
+    'bg-pastelYellow',
+    'bg-pastelGreen',
+    'bg-pastelBlue',
+  ],
   theme: {
     container: {
       center: true,
