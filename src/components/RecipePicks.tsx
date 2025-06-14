@@ -27,7 +27,7 @@ const RecipePicks: React.FC = () => (
         <div className="flex items-center gap-4 p-3 rounded-xl bg-pastelYellow/20" key={pick.label}>
           <img src={pick.img} alt={pick.label} className="w-16 h-16 object-cover rounded-xl border-2 border-pastelYellow shadow" />
           <div>
-            <div className="flex items-center gap-2 font-fredoka text-lg text-choco flex-row-reverse">
+            <div className="flex items-center gap-2 font-fredoka text-lg text-choco flex-row"> {/* Changed flex-row-reverse to flex-row */}
               {pick.icon}
               <span>{pick.label}</span>
             </div>
@@ -41,3 +41,4 @@ const RecipePicks: React.FC = () => (
 );
 
 export default RecipePicks;
+
