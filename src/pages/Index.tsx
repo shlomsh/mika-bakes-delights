@@ -10,39 +10,57 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
 import { categories } from "@/data/categoriesData";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Plus } from "lucide-react";
+import AuthComponent from "@/components/Auth";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
+  const { isAuthenticated } = useAuth();
+
   return (
     <main className="min-h-screen w-full flex flex-col" style={{background: "#faf9f7", direction: "rtl"}}>
       {/* Header / Navbar */}
-      <header className="w-full flex flex-col sm:flex-row items-center sm:justify-between gap-4 sm:gap-0 py-4 px-6 bg-white border-b border-gray-100 shadow-sm sm:flex-row-reverse">
+      <header className="w-full flex flex-col sm:flex-row items-center sm:justify-between gap-4 sm:gap-0 py-4 px-6 bg-white border-b border-gray-100 shadow-sm">
         <div className="flex items-center gap-3 flex-row-reverse">
           <div className="w-10 h-10 rounded-full bg-pastelYellow flex items-center justify-center font-fredoka text-xl shadow-inner border">
             מ
           </div>
           <span className="font-fredoka text-2xl text-choco tracking-tight">ספר המתכונים של מיקה</span>
         </div>
-        <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 sm:gap-7 font-fredoka text-choco text-lg flex-row-reverse sm:flex-nowrap">
-          <a className="hover:text-pastelOrange transition" href="#">בית</a>
-          <a className="hover:text-pastelOrange transition" href="#">על מיקה</a>
-          <DropdownMenu dir="rtl">
-            <DropdownMenuTrigger className="flex items-center gap-1 hover:text-pastelOrange transition outline-none">
-              קטגוריות
-              <ChevronDown className="w-4 h-4" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              {categories.map((category) => (
-                <DropdownMenuItem key={category.slug} asChild>
-                  <Link to={`/category/${category.slug}`}>
-                    {category.label}
-                  </Link>
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <a className="hover:text-pastelOrange transition" href="#">מועדפים</a>
-        </nav>
+        <div className="flex items-center gap-6">
+          <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 sm:gap-7 font-fredoka text-choco text-lg flex-row-reverse sm:flex-nowrap">
+            <a className="hover:text-pastelOrange transition" href="#">בית</a>
+            <a className="hover:text-pastelOrange transition" href="#">על מיקה</a>
+            <DropdownMenu dir="rtl">
+              <DropdownMenuTrigger className="flex items-center gap-1 hover:text-pastelOrange transition outline-none">
+                קטגוריות
+                <ChevronDown className="w-4 h-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {categories.map((category) => (
+                  <DropdownMenuItem key={category.slug} asChild>
+                    <Link to={`/category/${category.slug}`}>
+                      {category.label}
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <a className="hover:text-pastelOrange transition" href="#">מועדפים</a>
+          </nav>
+          <div className="flex items-center gap-4">
+            {isAuthenticated && (
+              <Button asChild>
+                <Link to="/new-recipe">
+                  <Plus className="ml-2 h-4 w-4" />
+                  הוסף מתכון
+                </Link>
+              </Button>
+            )}
+            <AuthComponent />
+          </div>
+        </div>
       </header>
 
       {/* Main 2-column desktop grid */}

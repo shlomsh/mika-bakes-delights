@@ -1,15 +1,27 @@
 import React, { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { ArrowRight, ChefHat, ListChecks, Utensils, Pencil } from 'lucide-react';
+import { ArrowRight, ChefHat, ListChecks, Utensils, Pencil, Trash2 } from 'lucide-react';
 import { Recipe as BaseRecipe } from '@/data/sampleRecipes';
 import RecipeEditForm from '@/components/RecipeEditForm';
 import RecipeUpdateLogs from '@/components/RecipeUpdateLogs';
 import { useAuth } from '@/hooks/useAuth';
 import AuthComponent from '@/components/Auth';
+import { useToast } from '@/hooks/use-toast';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface Ingredient {
   description: string;
@@ -73,6 +85,9 @@ const RecipePage: React.FC = () => {
   const { recipeId } = useParams<{ recipeId: string }>();
   const [isEditing, setIsEditing] = useState(false);
   const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: recipe, isLoading, error, refetch } = useQuery({
     queryKey: ['recipe', recipeId || null], 
@@ -80,6 +95,22 @@ const RecipePage: React.FC = () => {
       if (!recipeId) return Promise.resolve(null);
       return fetchRecipeById(recipeId);
     },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from('recipes').delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast({ title: "הצלחה!", description: "המתכון נמחק בהצלחה." });
+      queryClient.invalidateQueries({ queryKey: ['recipes'] });
+      queryClient.invalidateQueries({ queryKey: ['recipePicks'] });
+      navigate('/');
+    },
+    onError: (err: Error) => {
+      toast({ variant: "destructive", title: "שגיאה", description: `אירעה שגיאה במחיקת המתכון: ${err.message}` });
+    }
   });
 
   if (isLoading) {
@@ -136,10 +167,37 @@ const RecipePage: React.FC = () => {
         </div>
         <div className="flex items-center gap-4">
           {isAuthenticated && (
-            <Button variant="outline" className="text-choco border-choco hover:bg-choco/10" onClick={() => setIsEditing(true)}>
-              <Pencil className="ml-2 h-4 w-4" />
-              ערוך מתכון
-            </Button>
+            <>
+              <Button variant="outline" className="text-choco border-choco hover:bg-choco/10" onClick={() => setIsEditing(true)}>
+                <Pencil className="ml-2 h-4 w-4" />
+                ערוך מתכון
+              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="destructive">
+                    <Trash2 className="ml-2 h-4 w-4" />
+                    מחק מתכון
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent style={{direction: 'rtl'}}>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>האם אתה בטוח?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      פעולה זו לא ניתנת לביטול. פעולה זו תמחק לצמיתות את המתכון מהשרתים שלנו.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>ביטול</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => recipeId && deleteMutation.mutate(recipeId)}
+                      disabled={deleteMutation.isPending}
+                    >
+                      {deleteMutation.isPending ? "מוחק..." : "מחק"}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </>
           )}
           <Button asChild variant="outline" className="text-choco border-choco hover:bg-choco/10">
             <Link to="/">
