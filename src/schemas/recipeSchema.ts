@@ -15,7 +15,10 @@ export const recipeSchema = z.object({
   sauces: z.array(z.object({
     description: z.string().min(1, { message: "תיאור הרוטב לא יכול להיות ריק." })
   })).optional(),
-  garnishes: z.array(z.object({
+  garnish_ingredients: z.array(z.object({
+    description: z.string().min(1, { message: "תיאור מרכיב התוספת לא יכול להיות ריק." })
+  })).optional(),
+  garnish_instructions: z.array(z.object({
     description: z.string().min(1, { message: "תיאור התוספת לא יכול להיות ריק." })
   })).optional(),
 });

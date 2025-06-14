@@ -26,13 +26,25 @@ export interface Garnish {
   step_number: number;
 }
 
+export interface GarnishIngredient {
+  description: string;
+  sort_order: number;
+}
+
+export interface GarnishInstruction {
+  description: string;
+  step_number: number;
+}
+
 export type RecipeWithDetails = Omit<BaseRecipe, 'ingredients' | 'instructions'> & {
   recommended: boolean;
   recipe_ingredients: Ingredient[];
   recipe_instructions: Instruction[];
   recipe_sauces: Sauce[];
   recipe_sauce_ingredients: SauceIngredient[];
-  recipe_garnishes: Garnish[];
+  recipe_garnishes: Garnish[]; // Kept for display backward compatibility
+  recipe_garnish_ingredients: GarnishIngredient[];
+  recipe_garnish_instructions: GarnishInstruction[];
   categories: {
     id: string;
     slug: string;

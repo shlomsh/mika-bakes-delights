@@ -42,7 +42,39 @@ export type Database = {
         }
         Relationships: []
       }
-      recipe_garnishes: {
+      recipe_garnish_ingredients: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          recipe_id: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          recipe_id: string
+          sort_order: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          recipe_id?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipe_garnish_ingredients_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recipe_garnish_instructions: {
         Row: {
           created_at: string
           description: string

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -38,7 +37,8 @@ const RecipeCreateForm: React.FC<RecipeCreateFormProps> = ({ categoryId }) => {
       ingredients: [{ description: '' }],
       instructions: [{ description: '' }],
       sauces: [],
-      garnishes: [],
+      garnish_ingredients: [],
+      garnish_instructions: [],
     },
   });
 
@@ -167,9 +167,17 @@ const RecipeCreateForm: React.FC<RecipeCreateFormProps> = ({ categoryId }) => {
             addButtonLabel="הוסף שלב לרוטב"
           />
 
+          <IngredientsFieldArray 
+            name="garnish_ingredients"
+            title="מרכיבי התוספת (אופציונלי)"
+            titleIcon={<Sparkles className="ml-2 h-5 w-5 text-pastelYellow" />}
+            addButtonLabel="הוסף מרכיב לתוספת"
+            placeholder="לדוגמה: פטרוזיליה קצוצה"
+          />
+
           <InstructionsFieldArray 
-            name="garnishes"
-            title="תוספת (אופציונלי)"
+            name="garnish_instructions"
+            title="הוראות לתוספת (אופציונלי)"
             titleIcon={<Sparkles className="ml-2 h-5 w-5 text-pastelYellow" />}
             addButtonLabel="הוסף שלב לתוספת"
           />

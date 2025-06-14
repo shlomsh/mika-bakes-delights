@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { Loader2, Save, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { Recipe as BaseRecipe } from '@/data/sampleRecipes';
 import { recipeEditSchema, RecipeEditFormValues } from '@/schemas/recipeEditSchema';
 import { updateRecipeInDb } from '@/api/recipeApi';
 import BasicInfoSection from './recipe-edit/BasicInfoSection';
@@ -18,46 +16,9 @@ import GarnishSection from './recipe-edit/GarnishSection';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-
-// Type definitions copied from RecipePage for consistency
-interface Ingredient {
-  description: string;
-  sort_order: number;
-}
-
-interface Instruction {
-  description: string;
-  step_number: number;
-}
-
-interface Sauce {
-  description: string;
-  step_number: number;
-}
-
-interface SauceIngredient {
-  description: string;
-  sort_order: number;
-}
-
-interface Garnish {
-  description: string;
-  step_number: number;
-}
-
-type RecipeWithDetails = Omit<BaseRecipe, 'ingredients' | 'instructions'> & {
-  recommended: boolean;
-  recipe_ingredients: Ingredient[];
-  recipe_instructions: Instruction[];
-  recipe_sauces: Sauce[];
-  recipe_sauce_ingredients: SauceIngredient[];
-  recipe_garnishes: Garnish[];
-  categories: {
-    id: string;
-    slug: string;
-    name: string;
-  } | null;
-};
+import { RecipeWithDetails } from '@/components/recipe-page/types';
+import GarnishIngredientsSection from './recipe-edit/GarnishIngredientsSection';
+import GarnishInstructionsSection from './recipe-edit/GarnishInstructionsSection';
 
 interface RecipeEditFormProps {
   recipe: RecipeWithDetails;
@@ -79,7 +40,8 @@ const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSav
       instructions: recipe.recipe_instructions.map(i => ({ description: i.description })),
       sauce_ingredients: recipe.recipe_sauce_ingredients?.map(s => ({ description: s.description })) || [],
       sauces: recipe.recipe_sauces?.map(s => ({ description: s.description })) || [],
-      garnishes: recipe.recipe_garnishes?.map(g => ({ description: g.description })) || [],
+      garnish_ingredients: recipe.recipe_garnish_ingredients?.map(g => ({ description: g.description })) || [],
+      garnish_instructions: recipe.recipe_garnish_instructions?.map(g => ({ description: g.description })) || [],
     },
   });
 
@@ -144,7 +106,8 @@ const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSav
               <IngredientsSection />
               <InstructionsSection />
               <SauceSection />
-              <GarnishSection />
+              <GarnishIngredientsSection />
+              <GarnishInstructionsSection />
 
               <div className="flex justify-end gap-2 sm:gap-4">
                 {/* Desktop Cancel Button */}

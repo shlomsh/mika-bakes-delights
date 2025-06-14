@@ -44,9 +44,13 @@ const fetchRecipeById = async (recipeId: string): Promise<RecipeWithDetails | nu
         description,
         sort_order
       ),
-      recipe_garnishes (
+      recipe_garnish_instructions (
         description,
         step_number
+      ),
+      recipe_garnish_ingredients (
+        description,
+        sort_order
       )
     `)
     .eq('id', recipeId)
@@ -54,14 +58,24 @@ const fetchRecipeById = async (recipeId: string): Promise<RecipeWithDetails | nu
     .order('step_number', { foreignTable: 'recipe_instructions', ascending: true })
     .order('step_number', { foreignTable: 'recipe_sauces', ascending: true })
     .order('sort_order', { foreignTable: 'recipe_sauce_ingredients', ascending: true })
-    .order('step_number', { foreignTable: 'recipe_garnishes', ascending: true })
+    .order('step_number', { foreignTable: 'recipe_garnish_instructions', ascending: true })
+    .order('sort_order', { foreignTable: 'recipe_garnish_ingredients', ascending: true })
     .single(); 
 
   if (error) {
     console.error('Error fetching recipe:', error);
     return null;
   }
-  return data as unknown as RecipeWithDetails;
+  if (!data) {
+    return null;
+  }
+  
+  const recipeData = data as unknown as RecipeWithDetails;
+
+  // For backward compatibility with read-only RecipeContent component
+  recipeData.recipe_garnishes = recipeData.recipe_garnish_instructions || [];
+
+  return recipeData;
 };
 
 const RecipePage: React.FC = () => {

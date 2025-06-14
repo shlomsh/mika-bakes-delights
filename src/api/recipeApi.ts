@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { RecipeEditFormValues } from '@/schemas/recipeEditSchema';
 
@@ -9,7 +8,7 @@ export async function updateRecipeInDb({ recipeId, values }: { recipeId: string,
     throw new Error("User not authenticated. Please log in to save changes.");
   }
   
-  const { name, description, ingredients, instructions, sauces, garnishes, image_file, sauce_ingredients, recommended } = values;
+  const { name, description, ingredients, instructions, sauces, image_file, sauce_ingredients, recommended, garnish_ingredients, garnish_instructions } = values;
 
   let newImageUrl: string | undefined = undefined;
 
@@ -60,7 +59,8 @@ export async function updateRecipeInDb({ recipeId, values }: { recipeId: string,
     { name: 'recipe_instructions', data: instructions, sortKey: 'step_number' },
     { name: 'recipe_sauce_ingredients', data: sauce_ingredients, sortKey: 'sort_order' },
     { name: 'recipe_sauces', data: sauces, sortKey: 'step_number' },
-    { name: 'recipe_garnishes', data: garnishes, sortKey: 'step_number' },
+    { name: 'recipe_garnish_ingredients', data: garnish_ingredients, sortKey: 'sort_order' },
+    { name: 'recipe_garnish_instructions', data: garnish_instructions, sortKey: 'step_number' },
   ] as const;
 
   for (const table of tablesToUpdate) {
