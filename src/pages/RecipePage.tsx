@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -71,9 +70,6 @@ const fetchRecipeById = async (recipeId: string): Promise<RecipeWithDetails | nu
   }
   
   const recipeData = data as unknown as RecipeWithDetails;
-
-  // For backward compatibility with read-only RecipeContent component
-  recipeData.recipe_garnishes = recipeData.recipe_garnish_instructions || [];
 
   return recipeData;
 };
