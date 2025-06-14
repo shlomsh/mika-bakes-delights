@@ -51,7 +51,15 @@ const Index = () => {
   };
 
   return (
-    <main className="min-h-screen w-full flex flex-col" style={{background: "#faf9f7", direction: "rtl"}}>
+    <main 
+      className="min-h-screen w-full flex flex-col" 
+      style={{
+        backgroundImage: "linear-gradient(rgba(250, 249, 247, 0.85), rgba(250, 249, 247, 0.85)), url('https://images.unsplash.com/photo-1587314168485-3236d6710814?auto=format&fit=crop')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        direction: "rtl"
+      }}
+    >
       <AppHeader categories={categories} />
 
       {/* Main 2-column desktop grid */}
