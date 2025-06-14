@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import * as z from 'zod';
 
@@ -66,6 +67,20 @@ const Index = () => {
         {/* Main Hero & Picks (2 columns on desktop) */}
         <div className="lg:col-span-2 flex flex-col gap-10">
           <MikaHero />
+          
+          {/* On mobile, categories appear here */}
+          <div className="block lg:hidden">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="font-fredoka text-2xl text-choco">קטגוריות</h2>
+            </div>
+            {isLoadingCategories ? <p>טוען קטגוריות...</p> : 
+              <CategoryCards 
+                categories={categories || []}
+                onEdit={handleEdit}
+              />
+            }
+          </div>
+
           <RecipePicks />
         </div>
         {/* Categories Section on Desktop */}
@@ -80,19 +95,6 @@ const Index = () => {
             />
           }
         </div>
-      </div>
-      
-      {/* On mobile, categories appear below the main content */}
-      <div className="block lg:hidden px-8 py-4">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="font-fredoka text-2xl text-choco">קטגוריות</h2>
-        </div>
-        {isLoadingCategories ? <p>טוען קטגוריות...</p> : 
-          <CategoryCards 
-            categories={categories || []}
-            onEdit={handleEdit}
-          />
-        }
       </div>
       
       <Dialog open={isFormOpen} onOpenChange={(isOpen) => { if (!isOpen) setEditingCategory(null); setFormOpen(isOpen); }}>
