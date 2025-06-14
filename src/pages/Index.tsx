@@ -54,9 +54,8 @@ const Index = () => {
     <main 
       className="min-h-screen w-full flex flex-col" 
       style={{
-        backgroundImage: "linear-gradient(rgba(250, 249, 247, 0.85), rgba(250, 249, 247, 0.85)), url('https://images.unsplash.com/photo-1587314168485-3236d6710814?auto=format&fit=crop')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundImage: "linear-gradient(rgba(250, 249, 247, 0.85), rgba(250, 249, 247, 0.85)), url('/lovable-uploads/ba509ec5-29e1-4ea7-9d37-63b4c65f5cef.png')",
+        backgroundRepeat: 'repeat',
         direction: "rtl"
       }}
     >
