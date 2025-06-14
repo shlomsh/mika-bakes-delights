@@ -162,17 +162,21 @@ const RecipePage: React.FC = () => {
           </div>
           {instructionsArray.length > 0 && (
             <CardFooter className="flex-col items-start p-6 bg-white rounded-b-lg border-t border-choco/10">
-              <h2 className="font-fredoka text-xl text-choco mb-3 flex items-center">
+              <h2 className="font-fredoka text-xl text-choco mb-4 flex items-center">
                 <Utensils className="mr-2 text-pastelBlue" />
                 אופן ההכנה:
               </h2>
-              <ol className="list-decimal list-inside space-y-2 text-choco/90 w-full">
+              <ol className="w-full list-none space-y-6 text-choco/90">
                 {instructionsArray.map((step, index) => (
-                  <li
-                    key={index}
-                    className="leading-relaxed py-2 pr-3 pl-4 bg-pastelBlue/10 rounded-r-md border-l-4 border-pastelBlue"
-                    dangerouslySetInnerHTML={{ __html: step }}
-                  />
+                  <li key={index} className="flex items-start gap-x-4">
+                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-pastelBlue text-choco font-fredoka text-lg font-bold">
+                      {index + 1}
+                    </div>
+                    <div
+                      className="flex-1 pt-1 leading-relaxed text-choco/90"
+                      dangerouslySetInnerHTML={{ __html: step }}
+                    />
+                  </li>
                 ))}
               </ol>
             </CardFooter>
