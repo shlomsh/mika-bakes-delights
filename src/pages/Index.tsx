@@ -83,7 +83,13 @@ const Index = () => {
   const updateMutation = useMutation<void, Error, CategoryFormValues>({
     mutationFn: async (values) => {
       if (!editingCategory) return;
-      const { error } = await supabase.from('categories').update(values).eq('id', editingCategory.id);
+      const { error } = await supabase.from('categories').update({
+        name: values.name,
+        slug: values.slug,
+        description: values.description,
+        color: values.color,
+        icon: values.icon,
+      }).eq('id', editingCategory.id);
       if (error) throw error;
     },
     onSuccess: () => {
