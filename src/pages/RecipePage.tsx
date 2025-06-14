@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -6,13 +5,30 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { ArrowRight, ChefHat, ListChecks, Utensils } from 'lucide-react';
-import { Recipe } from '@/data/sampleRecipes'; // Assuming Recipe type is here
-import { type Json } from "@/integrations/supabase/types";
+import { Recipe as BaseRecipe } from '@/data/sampleRecipes';
 
-const fetchRecipeById = async (recipeId: string): Promise<Recipe | null> => {
-  // recipeId is now asserted to be a string when this function is called by useQuery
-  // No need for: if (!recipeId) return null; as queryFn won't run if key has null.
+interface Ingredient {
+  description: string;
+  sort_order: number;
+}
 
+interface Instruction {
+  description: string;
+  step_number: number;
+}
+
+type RecipeWithDetails = Omit<BaseRecipe, 'ingredients' | 'instructions'> & {
+  recipe_ingredients: Ingredient[];
+  recipe_instructions: Instruction[];
+  categories: {
+    id: string;
+    slug: string;
+    name: string;
+  } | null;
+};
+
+
+const fetchRecipeById = async (recipeId: string): Promise<RecipeWithDetails | null> => {
   const { data, error } = await supabase
     .from('recipes')
     .select(`
@@ -20,8 +36,6 @@ const fetchRecipeById = async (recipeId: string): Promise<Recipe | null> => {
       name,
       description,
       image_url,
-      ingredients,
-      instructions,
       category_id,
       created_at,
       updated_at,
@@ -29,50 +43,38 @@ const fetchRecipeById = async (recipeId: string): Promise<Recipe | null> => {
         id,
         slug,
         name
+      ),
+      recipe_ingredients (
+        description,
+        sort_order
+      ),
+      recipe_instructions (
+        description,
+        step_number
       )
     `)
     .eq('id', recipeId)
+    .order('sort_order', { foreignTable: 'recipe_ingredients', ascending: true })
+    .order('step_number', { foreignTable: 'recipe_instructions', ascending: true })
     .single(); 
 
   if (error) {
     console.error('Error fetching recipe:', error);
     return null;
   }
-  return data as Recipe;
+  return data as unknown as RecipeWithDetails;
 };
 
 const RecipePage: React.FC = () => {
-  const { recipeId } = useParams<{ recipeId: string }>(); // recipeId can be undefined initially
+  const { recipeId } = useParams<{ recipeId: string }>();
 
   const { data: recipe, isLoading, error } = useQuery({
-    // Use null in queryKey to disable query if recipeId is undefined/falsy
-    // This is often more stable for hook counts than toggling 'enabled'.
     queryKey: ['recipe', recipeId || null], 
     queryFn: () => {
-      // queryFn will only execute if recipeId is truthy (not null in key)
-      // So, recipeId can be safely asserted as string here.
-      if (!recipeId) return Promise.resolve(null); // Defensive, though should not be hit if key is null
+      if (!recipeId) return Promise.resolve(null);
       return fetchRecipeById(recipeId);
     },
-    // Remove 'enabled: !!recipeId' as null in queryKey handles this.
   });
-
-  const ingredientsArray = React.useMemo(() => {
-    if (!recipe || !recipe.ingredients) return [];
-    if (Array.isArray(recipe.ingredients)) return recipe.ingredients as string[];
-    console.warn("Recipe ingredients are in an unexpected format:", recipe.ingredients);
-    return [];
-  }, [recipe]); // Keep dependency on 'recipe' as a whole for simplicity here
-
-  const instructionsArray = React.useMemo(() => {
-    if (!recipe || !recipe.instructions) return [];
-    // Ensure instructions is a string before calling split
-    if (typeof recipe.instructions !== 'string') {
-        console.warn("Recipe instructions are not a string:", recipe.instructions);
-        return [];
-    }
-    return recipe.instructions.split('\n').filter(line => line.trim() !== '');
-  }, [recipe]); // Keep dependency on 'recipe' as a whole
 
   if (isLoading) {
     return (
@@ -144,15 +146,15 @@ const RecipePage: React.FC = () => {
                 )}
               </CardHeader>
               <CardContent className="flex-grow pt-0">
-                {ingredientsArray.length > 0 && (
+                {recipe.recipe_ingredients && recipe.recipe_ingredients.length > 0 && (
                   <div className="mb-6">
                     <h2 className="font-fredoka text-xl text-choco mb-2 flex items-center">
                       <ListChecks className="mr-2 text-pastelOrange" />
                       מצרכים:
                     </h2>
                     <ul className="list-disc list-inside space-y-1 text-choco/90 bg-pastelYellow/20 p-4 rounded-md">
-                      {ingredientsArray.map((ingredient, index) => (
-                        <li key={index}>{ingredient}</li>
+                      {recipe.recipe_ingredients.map((ingredient, index) => (
+                        <li key={index}>{ingredient.description}</li>
                       ))}
                     </ul>
                   </div>
@@ -160,21 +162,21 @@ const RecipePage: React.FC = () => {
               </CardContent>
             </div>
           </div>
-          {instructionsArray.length > 0 && (
+          {recipe.recipe_instructions && recipe.recipe_instructions.length > 0 && (
             <CardFooter className="flex-col items-start p-6 bg-white rounded-b-lg border-t border-choco/10">
               <h2 className="font-fredoka text-xl text-choco mb-4 flex items-center">
                 <Utensils className="mr-2 text-pastelBlue" />
                 אופן ההכנה:
               </h2>
               <ol className="w-full list-none space-y-6 text-choco/90">
-                {instructionsArray.map((step, index) => (
-                  <li key={index} className="flex items-start gap-x-4">
+                {recipe.recipe_instructions.map((step) => (
+                  <li key={step.step_number} className="flex items-start gap-x-4">
                     <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-pastelBlue text-choco font-fredoka text-lg font-bold">
-                      {index + 1}
+                      {step.step_number}
                     </div>
                     <div
                       className="flex-1 pt-1 leading-relaxed text-choco/90"
-                      dangerouslySetInnerHTML={{ __html: step }}
+                      dangerouslySetInnerHTML={{ __html: step.description }}
                     />
                   </li>
                 ))}
