@@ -34,9 +34,9 @@ export default {
         inter: ['Inter', 'sans-serif']
       },
       colors: {
-        pastelYellow: "#fbcfe8", // Changed to pastel pink
+        pastelYellow: "#ffe49e",
         pastelBlue: "#b4dcff",
-        pastelOrange: "#fecdd3", // Changed to pastel rose
+        pastelOrange: "#ffb997",
         pastelGreen: "#bbf7d0",
         choco: "#614e3e",
         'off-white': '#faf9f7',
