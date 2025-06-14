@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -63,7 +62,7 @@ export function RecipeSearch() {
         className="relative h-10 w-full justify-start rounded-md text-sm font-normal shadow-none sm:pr-12 md:w-40 lg:w-64"
         onClick={() => setOpen(true)}
       >
-        <SearchIcon className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2" />
+        <SearchIcon />
         <span className="hidden lg:inline-flex">חפש מתכון...</span>
         <span className="inline-flex lg:hidden">חפש...</span>
         <kbd className="pointer-events-none absolute right-[0.5rem] top-1/2 -translate-y-1/2 hidden h-5 select-none items-center gap-1 rounded border border-choco/20 bg-choco/10 px-1.5 font-mono text-[10px] font-medium text-choco opacity-100 sm:flex">
