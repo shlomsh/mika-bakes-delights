@@ -2,12 +2,14 @@
 import React from 'react';
 import RecipeCreateForm from '@/components/RecipeCreateForm';
 import { useAuth } from '@/hooks/useAuth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ChefHat } from 'lucide-react';
 
 const NewRecipePage: React.FC = () => {
     const { isAuthenticated, loading } = useAuth();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const categoryId = searchParams.get('categoryId');
 
     React.useEffect(() => {
         if (!loading && !isAuthenticated) {
@@ -31,7 +33,7 @@ const NewRecipePage: React.FC = () => {
     return (
         <div className="min-h-screen w-full flex flex-col items-center p-4 md:p-8" style={{ background: "#faf9f7", direction: "rtl" }}>
             <main className="w-full max-w-5xl">
-                <RecipeCreateForm />
+                <RecipeCreateForm categoryId={categoryId} />
             </main>
         </div>
     );

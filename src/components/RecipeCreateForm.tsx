@@ -12,10 +12,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlusCircle, Trash2, Loader2, Save, Blend, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { useCategories } from '@/hooks/useCategories';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const formSchema = z.object({
   name: z.string().min(3, { message: "שם המתכון חייב להכיל לפחות 3 תווים." }),
   description: z.string().optional(),
+  category_id: z.string().uuid().nullable().optional(),
   image_file: z.instanceof(FileList).optional(),
   ingredients: z.array(z.object({
     description: z.string().min(1, { message: "תיאור המרכיב לא יכול להיות ריק." })
@@ -40,12 +43,12 @@ async function createRecipeInDb({ values }: { values: RecipeFormValues }) {
     throw new Error("User not authenticated. Please log in to save changes.");
   }
   
-  const { name, description, ingredients, instructions, sauces, garnishes, image_file } = values;
+  const { name, description, ingredients, instructions, sauces, garnishes, image_file, category_id } = values;
 
   // 1. Create recipe and get its ID
   const { data: recipeData, error: recipeError } = await supabase
     .from('recipes')
-    .insert({ name, description: description || null })
+    .insert({ name, description: description || null, category_id: category_id || null })
     .select('id')
     .single();
 
@@ -132,9 +135,14 @@ async function createRecipeInDb({ values }: { values: RecipeFormValues }) {
   return recipeId;
 }
 
-const RecipeCreateForm: React.FC = () => {
+interface RecipeCreateFormProps {
+  categoryId?: string | null;
+}
+
+const RecipeCreateForm: React.FC<RecipeCreateFormProps> = ({ categoryId }) => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { categories, isLoadingCategories } = useCategories();
   const [imagePreview, setImagePreview] = React.useState<string | null>(null);
   const queryClient = useQueryClient();
   
@@ -143,6 +151,7 @@ const RecipeCreateForm: React.FC = () => {
     defaultValues: {
       name: '',
       description: '',
+      category_id: categoryId || null,
       ingredients: [{ description: '' }],
       instructions: [{ description: '' }],
       sauces: [],
@@ -212,6 +221,30 @@ const RecipeCreateForm: React.FC = () => {
                 <FormItem>
                   <FormLabel>תיאור</FormLabel>
                   <FormControl><Textarea {...field} /></FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="category_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>קטגוריה</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value || undefined} disabled={isLoadingCategories}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="בחר קטגוריה (אופציונלי)..." />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {categories?.map((cat) => (
+                        <SelectItem key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

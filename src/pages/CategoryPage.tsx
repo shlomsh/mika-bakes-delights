@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -116,7 +117,7 @@ const CategoryPage: React.FC = () => {
         <div className="flex items-center gap-4">
           {isAuthenticated && (
              <Button asChild>
-                <Link to="/new-recipe">
+                <Link to={`/new-recipe?categoryId=${category.id}`}>
                   <Plus className="ml-2 h-4 w-4" />
                   הוסף מתכון
                 </Link>
