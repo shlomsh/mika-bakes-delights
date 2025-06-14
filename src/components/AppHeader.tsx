@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronDown } from 'lucide-react';
@@ -10,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import AuthComponent from "@/components/Auth";
 import type { Tables } from "@/integrations/supabase/types";
+import { RecipeSearch } from './RecipeSearch';
 
 type Category = Tables<'categories'>;
 
@@ -26,8 +26,8 @@ const AppHeader: React.FC<AppHeaderProps> = ({ categories }) => {
         </div>
         <span className="font-fredoka text-2xl text-choco tracking-tight">ספר המתכונים של מיקה</span>
       </div>
-      <div className="flex items-center gap-6">
-        <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 sm:gap-7 font-fredoka text-choco text-lg flex-row-reverse sm:flex-nowrap">
+      <div className="flex items-center gap-4">
+        <nav className="hidden sm:flex flex-wrap justify-center gap-x-6 gap-y-2 sm:gap-7 font-fredoka text-choco text-lg flex-row-reverse sm:flex-nowrap">
           <Link className="hover:text-pastelOrange transition" to="/">בית</Link>
           <a className="hover:text-pastelOrange transition" href="#">על מיקה</a>
           <DropdownMenu dir="rtl">
@@ -47,7 +47,10 @@ const AppHeader: React.FC<AppHeaderProps> = ({ categories }) => {
           </DropdownMenu>
           <a className="hover:text-pastelOrange transition" href="#">מועדפים</a>
         </nav>
-        <AuthComponent />
+        <div className="flex items-center gap-4">
+          <RecipeSearch />
+          <AuthComponent />
+        </div>
       </div>
     </header>
   );
