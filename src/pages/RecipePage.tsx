@@ -22,6 +22,7 @@ const fetchRecipeById = async (recipeId: string): Promise<RecipeWithDetails | nu
       category_id,
       created_at,
       updated_at,
+      recommended,
       categories (
         id,
         slug,
@@ -105,6 +106,7 @@ const RecipePage: React.FC = () => {
 
   const handleSaveSuccess = () => {
     setIsEditing(false);
+    queryClient.invalidateQueries({ queryKey: ['recommendedRecipes'] });
     refetch();
   };
 

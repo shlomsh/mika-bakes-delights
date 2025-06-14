@@ -27,6 +27,7 @@ export interface Garnish {
 }
 
 export type RecipeWithDetails = Omit<BaseRecipe, 'ingredients' | 'instructions'> & {
+  recommended: boolean;
   recipe_ingredients: Ingredient[];
   recipe_instructions: Instruction[];
   recipe_sauces: Sauce[];

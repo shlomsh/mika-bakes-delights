@@ -15,6 +15,9 @@ import IngredientsSection from './recipe-edit/IngredientsSection';
 import InstructionsSection from './recipe-edit/InstructionsSection';
 import SauceSection from './recipe-edit/SauceSection';
 import GarnishSection from './recipe-edit/GarnishSection';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 
 // Type definitions copied from RecipePage for consistency
 interface Ingredient {
@@ -43,6 +46,7 @@ interface Garnish {
 }
 
 type RecipeWithDetails = Omit<BaseRecipe, 'ingredients' | 'instructions'> & {
+  recommended: boolean;
   recipe_ingredients: Ingredient[];
   recipe_instructions: Instruction[];
   recipe_sauces: Sauce[];
@@ -64,6 +68,7 @@ interface RecipeEditFormProps {
 const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSaveSuccess }) => {
   const { toast } = useToast();
   const [imagePreview, setImagePreview] = React.useState<string | null>(recipe.image_url);
+  const [isRecommended, setIsRecommended] = React.useState(recipe.recommended || false);
   
   const form = useForm<RecipeEditFormValues>({
     resolver: zodResolver(recipeEditSchema),
@@ -91,7 +96,7 @@ const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSav
   });
 
   const onSubmit = (values: RecipeEditFormValues) => {
-    mutation.mutate({ recipeId: recipe.id, values });
+    mutation.mutate({ recipeId: recipe.id, values: { ...values, recommended: isRecommended } });
   };
   
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,6 +120,26 @@ const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSav
                 imagePreview={imagePreview}
                 handleImageChange={handleImageChange}
               />
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="font-fredoka text-xl text-choco">הגדרות נוספות</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center space-x-2 space-x-reverse">
+                    <Switch
+                      id="recommended-switch"
+                      checked={isRecommended}
+                      onCheckedChange={setIsRecommended}
+                      aria-label="האם המתכון מומלץ?"
+                    />
+                    <Label htmlFor="recommended-switch" className="mr-2">מתכון מומלץ</Label>
+                  </div>
+                  <p className="text-sm text-choco/70 mt-2">
+                    מתכונים מומלצים יופיעו בעמוד הבית.
+                  </p>
+                </CardContent>
+              </Card>
 
               <IngredientsSection />
               <InstructionsSection />

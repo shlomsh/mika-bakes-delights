@@ -2,14 +2,14 @@
 import { supabase } from '@/integrations/supabase/client';
 import { RecipeEditFormValues } from '@/schemas/recipeEditSchema';
 
-export async function updateRecipeInDb({ recipeId, values }: { recipeId: string, values: RecipeEditFormValues }) {
+export async function updateRecipeInDb({ recipeId, values }: { recipeId: string, values: RecipeEditFormValues & { recommended?: boolean } }) {
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
     throw new Error("User not authenticated. Please log in to save changes.");
   }
   
-  const { name, description, ingredients, instructions, sauces, garnishes, image_file, sauce_ingredients } = values;
+  const { name, description, ingredients, instructions, sauces, garnishes, image_file, sauce_ingredients, recommended } = values;
 
   let newImageUrl: string | undefined = undefined;
 
@@ -34,13 +34,17 @@ export async function updateRecipeInDb({ recipeId, values }: { recipeId: string,
     newImageUrl = urlData.publicUrl;
   }
 
-  const recipeUpdateData: { name: string; description?: string | null; image_url?: string } = {
+  const recipeUpdateData: { name: string; description?: string | null; image_url?: string; recommended?: boolean } = {
     name,
     description: values.description || null,
   };
 
   if (newImageUrl) {
     recipeUpdateData.image_url = newImageUrl;
+  }
+  
+  if (typeof recommended === 'boolean') {
+    recipeUpdateData.recommended = recommended;
   }
 
   const { error: recipeError } = await supabase
