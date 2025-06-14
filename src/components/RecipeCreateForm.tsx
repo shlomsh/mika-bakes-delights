@@ -16,6 +16,7 @@ import { recipeSchema, RecipeFormValues } from '@/schemas/recipeSchema';
 import { createRecipe } from '@/api/recipes';
 import IngredientsFieldArray from './form/IngredientsFieldArray';
 import InstructionsFieldArray from './form/InstructionsFieldArray';
+import IngredientsListFieldArray from './form/IngredientsListFieldArray';
 
 interface RecipeCreateFormProps {
   categoryId?: string | null;
@@ -167,7 +168,7 @@ const RecipeCreateForm: React.FC<RecipeCreateFormProps> = ({ categoryId }) => {
             addButtonLabel="הוסף שלב לרוטב"
           />
 
-          <IngredientsFieldArray 
+          <IngredientsListFieldArray 
             name="garnish_ingredients"
             title="מרכיבי התוספת (אופציונלי)"
             titleIcon={<Sparkles className="ml-2 h-5 w-5 text-pastelYellow" />}

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,7 +13,6 @@ import BasicInfoSection from './recipe-edit/BasicInfoSection';
 import IngredientsSection from './recipe-edit/IngredientsSection';
 import InstructionsSection from './recipe-edit/InstructionsSection';
 import SauceSection from './recipe-edit/SauceSection';
-import GarnishSection from './recipe-edit/GarnishSection';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';

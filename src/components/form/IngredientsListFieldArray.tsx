@@ -2,20 +2,21 @@
 import React from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import { FormField, FormControl, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { FormField, FormControl, FormItem, FormMessage } from '@/components/ui/form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PlusCircle, Trash2 } from 'lucide-react';
 import { RecipeFormValues } from '@/schemas/recipeSchema';
 
-interface InstructionsFieldArrayProps {
-  name: "instructions" | "sauces" | "garnish_instructions";
+interface IngredientsListFieldArrayProps {
+  name: "garnish_ingredients";
   title: string;
   titleIcon?: React.ReactNode;
   addButtonLabel: string;
+  placeholder: string;
 }
 
-const InstructionsFieldArray: React.FC<InstructionsFieldArrayProps> = ({ name, title, titleIcon, addButtonLabel }) => {
+const IngredientsListFieldArray: React.FC<IngredientsListFieldArrayProps> = ({ name, title, titleIcon, addButtonLabel, placeholder }) => {
   const { control } = useFormContext<RecipeFormValues>();
   const { fields, append, remove } = useFieldArray({
     control,
@@ -37,9 +38,8 @@ const InstructionsFieldArray: React.FC<InstructionsFieldArrayProps> = ({ name, t
             name={`${name}.${index}.description`}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>שלב {index + 1}</FormLabel>
                 <div className="flex items-center gap-2">
-                  <FormControl><Textarea {...field} /></FormControl>
+                  <FormControl><Input {...field} placeholder={`${placeholder} ${index + 1}`} /></FormControl>
                   <Button type="button" variant="ghost" size="icon" onClick={() => remove(index)}>
                     <Trash2 className="h-4 w-4 text-destructive" />
                   </Button>
@@ -57,4 +57,4 @@ const InstructionsFieldArray: React.FC<InstructionsFieldArrayProps> = ({ name, t
   );
 };
 
-export default InstructionsFieldArray;
+export default IngredientsListFieldArray;
