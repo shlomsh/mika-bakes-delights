@@ -1,5 +1,5 @@
 
-// Landing page for Mika's Family Recipe App
+// דף הבית של ספר המתכונים של מיקה
 
 import MikaHero from "../components/MikaHero";
 import CategoryCards from "../components/CategoryCards";
@@ -7,20 +7,20 @@ import RecipePicks from "../components/RecipePicks";
 
 const Index = () => {
   return (
-    <main className="min-h-screen w-full flex flex-col" style={{background: "#faf9f7"}}>
+    <main className="min-h-screen w-full flex flex-col" style={{background: "#faf9f7", direction: "rtl"}}>
       {/* Header / Navbar */}
-      <header className="w-full flex items-center justify-between py-7 px-8 bg-white border-b border-gray-100 shadow-sm">
-        <div className="flex items-center gap-3">
+      <header className="w-full flex items-center justify-between py-7 px-8 bg-white border-b border-gray-100 shadow-sm flex-row-reverse">
+        <div className="flex items-center gap-3 flex-row-reverse">
           <div className="w-10 h-10 rounded-full bg-pastelYellow flex items-center justify-center font-fredoka text-xl shadow-inner border">
-            M
+            מ
           </div>
-          <span className="font-fredoka text-2xl text-choco tracking-tight">Mika's Recipes</span>
+          <span className="font-fredoka text-2xl text-choco tracking-tight">ספר המתכונים של מיקה</span>
         </div>
-        <nav className="flex gap-7 font-fredoka text-choco text-lg">
-          <a className="hover:text-pastelOrange transition" href="#">Home</a>
-          <a className="hover:text-pastelOrange transition" href="#">About Mika</a>
-          <a className="hover:text-pastelOrange transition" href="#">Categories</a>
-          <a className="hover:text-pastelOrange transition" href="#">Favorites</a>
+        <nav className="flex gap-7 font-fredoka text-choco text-lg flex-row-reverse">
+          <a className="hover:text-pastelOrange transition" href="#">בית</a>
+          <a className="hover:text-pastelOrange transition" href="#">על מיקה</a>
+          <a className="hover:text-pastelOrange transition" href="#">קטגוריות</a>
+          <a className="hover:text-pastelOrange transition" href="#">מועדפים</a>
         </nav>
       </header>
 

@@ -5,7 +5,7 @@
 
 /* Add Fredoka and Inter font to base */
 body {
-  @apply font-inter bg-[#faf9f7];
+  @apply font-inter bg-[#faf9f7] rtl:text-right rtl:direction-rtl;
 }
 h1, h2, h3, .font-fredoka {
   font-family: 'Fredoka', ui-rounded, sans-serif;

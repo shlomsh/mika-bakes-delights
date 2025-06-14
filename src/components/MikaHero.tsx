@@ -2,20 +2,20 @@
 import React from "react";
 
 const MikaHero: React.FC = () => (
-  <section className="relative bg-pastelYellow rounded-3xl shadow-lg p-8 flex flex-col items-center w-full h-full min-h-[380px] justify-center overflow-hidden">
-    <div className="absolute left-8 bottom-8 flex flex-col items-baseline">
-      <span className="bg-white/80 text-choco font-fredoka text-xl px-4 py-1 rounded-full shadow">Meet Mika!</span>
-      <span className="text-choco text-[2.4rem] font-fredoka font-bold leading-none mt-3" style={{textShadow: '0 2px 0 #fff9ea'}}>14-year-old <span className="text-pastelOrange">chef</span></span>
+  <section className="relative bg-pastelYellow rounded-3xl shadow-lg p-8 flex flex-col items-center w-full h-full min-h-[380px] justify-center overflow-hidden" dir="rtl">
+    <div className="absolute right-8 bottom-8 flex flex-col items-end">
+      <span className="bg-white/80 text-choco font-fredoka text-xl px-4 py-1 rounded-full shadow">הכירו את מיקה!</span>
+      <span className="text-choco text-[2.4rem] font-fredoka font-bold leading-none mt-3" style={{textShadow: '0 2px 0 #fff9ea'}}>מיקה - שפית <span className="text-pastelOrange">צעירה</span> בת 14</span>
     </div>
     <div className="flex flex-col items-center mt-8">
       <img
         src="/lovable-uploads/a7bf2bc5-e9ca-40f6-82fd-ca8916ffc199.png"
-        alt="Mika baking confectionery"
+        alt="מיקה אופה במטבח"
         className="w-64 h-64 object-cover border-4 border-white shadow-lg"
         style={{ marginBottom: "-3rem", marginTop: "1rem" }}
       />
       <p className="mt-8 text-lg text-choco text-center max-w-lg">
-        Mika is the family’s 14-year-old kitchen prodigy! Baking is her big love—especially <span className="font-bold text-pastelOrange">confectionery</span> and <span className="font-bold text-pastelYellow">pastry</span>. This app is her recipe box—full of sweet, savory, and classic family dishes.
+        מיקה היא בת ה-14 של המשפחה וכבר אלופה גדולה במטבח! האהבה הכי גדולה שלה היא <span className="font-bold text-pastelOrange">קונדיטוריה</span> ו-<span className="font-bold text-pastelYellow">מאפים</span>. כאן תמצאו את כל המתכונים הכי שווים שלה – מתוקים, מלוחים וביתיים.
       </p>
     </div>
   </section>
