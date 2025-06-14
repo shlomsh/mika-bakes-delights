@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardFooter } from '@/components/ui/card';
 import { ListChecks, Utensils, Soup, Sparkles } from 'lucide-react';
@@ -31,7 +30,7 @@ const RecipeContent: React.FC<RecipeContentProps> = ({ recipe }) => {
             {recipe.recipe_ingredients && recipe.recipe_ingredients.length > 0 && (
               <div className="mb-6">
                 <h2 className="font-fredoka text-xl text-choco mb-2 flex items-center">
-                  <ListChecks className="mr-2 text-pastelOrange" />
+                  <ListChecks className="ml-2 text-pastelOrange" />
                   מצרכים:
                 </h2>
                 <ul className="list-disc list-outside space-y-1 text-choco/90 bg-pastelYellow/20 p-4 pr-6 rounded-md">
@@ -44,7 +43,7 @@ const RecipeContent: React.FC<RecipeContentProps> = ({ recipe }) => {
             {recipe.recipe_garnishes && recipe.recipe_garnishes.length > 0 && (
               <div className="mb-6">
                 <h2 className="font-fredoka text-xl text-choco mb-2 flex items-center">
-                  <Sparkles className="mr-2 text-pastelYellow" />
+                  <Sparkles className="ml-2 text-pastelYellow" />
                   תוספת:
                 </h2>
                 <ul className="list-disc list-outside space-y-1 text-choco/90 bg-pastelYellow/20 p-4 pr-6 rounded-md">
@@ -60,7 +59,7 @@ const RecipeContent: React.FC<RecipeContentProps> = ({ recipe }) => {
       {recipe.recipe_instructions && recipe.recipe_instructions.length > 0 && (
         <CardFooter className="flex-col items-start p-6 bg-white border-t border-choco/10">
           <h2 className="font-fredoka text-xl text-choco mb-4 flex items-center">
-            <Utensils className="mr-2 text-pastelBlue" />
+            <Utensils className="ml-2 text-pastelBlue" />
             אופן ההכנה:
           </h2>
           <ol className="w-full list-none space-y-6 text-choco/90">
@@ -81,14 +80,14 @@ const RecipeContent: React.FC<RecipeContentProps> = ({ recipe }) => {
       {(recipe.recipe_sauces && recipe.recipe_sauces.length > 0 || (recipe.recipe_sauce_ingredients && recipe.recipe_sauce_ingredients.length > 0)) && (
         <CardFooter className="flex-col items-start p-6 bg-white rounded-b-lg border-t border-choco/10">
           <h2 className="font-fredoka text-xl text-choco mb-4 flex items-center">
-            <Soup className="mr-2 text-pastelOrange" />
+            <Soup className="ml-2 text-pastelOrange" />
             רוטב:
           </h2>
 
           {recipe.recipe_sauce_ingredients && recipe.recipe_sauce_ingredients.length > 0 && (
             <div className="w-full mb-6">
               <h3 className="font-fredoka text-lg text-choco mb-2 flex items-center">
-                <ListChecks className="mr-2 text-pastelOrange" />
+                <ListChecks className="ml-2 text-pastelOrange" />
                 מצרכים לרוטב:
               </h3>
               <ul className="list-disc list-outside space-y-1 text-choco/90 bg-pastelOrange/20 p-4 pr-6 rounded-md">
@@ -102,7 +101,7 @@ const RecipeContent: React.FC<RecipeContentProps> = ({ recipe }) => {
           {recipe.recipe_sauces && recipe.recipe_sauces.length > 0 && (
             <div className="w-full">
                 <h3 className="font-fredoka text-lg text-choco mb-4 flex items-center">
-                    <Utensils className="mr-2 text-pastelOrange" />
+                    <Utensils className="ml-2 text-pastelOrange" />
                     אופן הכנת הרוטב:
                 </h3>
                 <ol className="w-full list-none space-y-6 text-choco/90">
