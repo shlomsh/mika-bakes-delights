@@ -1,21 +1,21 @@
 
 import React from "react";
-import { CakeSlice, Star } from "lucide-react";
+import { Leaf, Cookie, Star, Utensils } from "lucide-react"; // Added Leaf and Cookie, Utensils
 
 const picks = [
   {
-    label: "לחמניית דבש",
-    desc: "לחמנייה רכה בציפוי דבש מתקתק",
-    price: "₪4.99 ליח'",
-    img: "https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?auto=format&fit=facearea&w=256&h=256&facepad=2&q=80", // placeholder
-    icon: <CakeSlice className="w-5 h-5 text-pastelOrange" />
+    label: "עלי גפן",
+    desc: "עלי גפן ממולאים באורז וירקות, מתכון משפחתי",
+    price: "₪6.50 למנה", // Updated price
+    img: "https://images.unsplash.com/photo-1597208131432-3495f38f5eba?auto=format&fit=crop&w=256&h=256&q=80", // Placeholder for grape leaves
+    icon: <Leaf className="w-5 h-5 text-green-600" /> // Changed icon
   },
   {
-    label: "לחמניית מלון",
-    desc: "לחמנייה קלה במילוי קרם מלון",
-    price: "₪5.50 ליח'",
-    img: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?auto=format&fit=facearea&w=256&h=256&facepad=2&q=80", // placeholder
-    icon: <Star className="w-5 h-5 text-pastelYellow" />
+    label: "עוגיות שוקולד צ'יפס",
+    desc: "עוגיות נימוחות עם המון שוקולד צ'יפס",
+    price: "₪35 למארז", // Updated price
+    img: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?auto=format&fit=facearea&w=256&h=256&facepad=2&q=80", // Using the provided image for cookies
+    icon: <Cookie className="w-5 h-5 text-yellow-600" /> // Changed icon
   },
 ];
 
