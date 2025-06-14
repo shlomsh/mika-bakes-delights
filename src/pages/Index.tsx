@@ -40,6 +40,7 @@ import CategoryForm, { categoryFormSchema } from "@/components/CategoryForm";
 import { useToast } from "@/components/ui/use-toast";
 
 type Category = Tables<'categories'>;
+type CategoryFormValues = z.infer<typeof categoryFormSchema>;
 
 const fetchCategories = async (): Promise<Category[]> => {
   const { data, error } = await supabase.from('categories').select('*').order('name');
@@ -64,8 +65,8 @@ const Index = () => {
     queryFn: fetchCategories,
   });
 
-  const createMutation = useMutation({
-    mutationFn: async (values: z.infer<typeof categoryFormSchema>) => {
+  const createMutation = useMutation<void, Error, CategoryFormValues>({
+    mutationFn: async (values) => {
       const { error } = await supabase.from('categories').insert(values);
       if (error) throw error;
     },
@@ -79,8 +80,8 @@ const Index = () => {
     },
   });
 
-  const updateMutation = useMutation({
-    mutationFn: async (values: z.infer<typeof categoryFormSchema>) => {
+  const updateMutation = useMutation<void, Error, CategoryFormValues>({
+    mutationFn: async (values) => {
       if (!editingCategory) return;
       const { error } = await supabase.from('categories').update(values).eq('id', editingCategory.id);
       if (error) throw error;
@@ -120,7 +121,7 @@ const Index = () => {
     setDeletingCategory(category);
   };
 
-  const handleFormSubmit = (values: z.infer<typeof categoryFormSchema>) => {
+  const handleFormSubmit = (values: CategoryFormValues) => {
     if (editingCategory) {
       updateMutation.mutate(values);
     } else {
@@ -137,7 +138,7 @@ const Index = () => {
     <main className="min-h-screen w-full flex flex-col" style={{background: "#faf9f7", direction: "rtl"}}>
       {/* Header / Navbar */}
       <header className="w-full flex flex-col sm:flex-row items-center sm:justify-between gap-4 sm:gap-0 py-4 px-6 bg-white border-b border-gray-100 shadow-sm">
-        {/* ... keep existing code (logo) */}
+        {/* ... keep existing code */}
         <div className="flex items-center gap-3 flex-row-reverse">
           <div className="w-10 h-10 rounded-full bg-pastelYellow flex items-center justify-center font-fredoka text-xl shadow-inner border">
             מ
@@ -166,7 +167,7 @@ const Index = () => {
             <a className="hover:text-pastelOrange transition" href="#">מועדפים</a>
           </nav>
           <div className="flex items-center gap-4">
-            {/* ... keep existing code (auth) */}
+            {/* ... keep existing code */}
             {isAuthenticated && (
               <Button asChild>
                 <Link to="/new-recipe">

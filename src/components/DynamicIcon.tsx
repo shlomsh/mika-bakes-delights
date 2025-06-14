@@ -1,19 +1,21 @@
 
 import React from 'react';
-import * as LucideIcons from 'lucide-react';
+import { icons, HelpCircle, type LucideProps } from 'lucide-react';
 
-type IconName = keyof typeof LucideIcons;
+// The keys of `icons` are the icon names in PascalCase
+type IconName = keyof typeof icons;
 
-interface DynamicIconProps extends LucideIcons.LucideProps {
+interface DynamicIconProps extends LucideProps {
   name: IconName | string;
 }
 
 const DynamicIcon: React.FC<DynamicIconProps> = ({ name, ...props }) => {
   const iconName = name as IconName;
-  const IconComponent = LucideIcons[iconName];
+  const IconComponent = icons[iconName];
 
   if (!IconComponent) {
-    return <LucideIcons.HelpCircle {...props} />;
+    // Fallback icon
+    return <HelpCircle {...props} />;
   }
 
   return <IconComponent {...props} />;
