@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { ArrowRight, ChefHat, ListChecks, Utensils } from 'lucide-react';
+import { ArrowRight, ChefHat, ListChecks, Utensils, Pencil } from 'lucide-react';
 import { Recipe as BaseRecipe } from '@/data/sampleRecipes';
+import RecipeEditForm from '@/components/RecipeEditForm';
 
 interface Ingredient {
   description: string;
@@ -67,8 +68,9 @@ const fetchRecipeById = async (recipeId: string): Promise<RecipeWithDetails | nu
 
 const RecipePage: React.FC = () => {
   const { recipeId } = useParams<{ recipeId: string }>();
+  const [isEditing, setIsEditing] = useState(false);
 
-  const { data: recipe, isLoading, error } = useQuery({
+  const { data: recipe, isLoading, error, refetch } = useQuery({
     queryKey: ['recipe', recipeId || null], 
     queryFn: () => {
       if (!recipeId) return Promise.resolve(null);
@@ -108,6 +110,15 @@ const RecipePage: React.FC = () => {
     );
   }
 
+  const handleSaveSuccess = () => {
+    setIsEditing(false);
+    refetch();
+  };
+
+  if (isEditing) {
+    return <RecipeEditForm recipe={recipe} onCancel={() => setIsEditing(false)} onSaveSuccess={handleSaveSuccess} />;
+  }
+
   return (
     <div className="min-h-screen w-full flex flex-col items-center p-4 md:p-8" style={{ background: "#faf9f7", direction: "rtl" }}>
       <header className="w-full max-w-5xl mb-6 md:mb-10 flex flex-col md:flex-row justify-between items-center">
@@ -119,12 +130,18 @@ const RecipePage: React.FC = () => {
             </Link>
           )}
         </div>
-        <Button asChild variant="outline" className="text-choco border-choco hover:bg-choco/10">
-          <Link to="/">
-            <ArrowRight className="ml-2 h-4 w-4" />
-            חזרה לדף הבית
-          </Link>
-        </Button>
+        <div className="flex items-center gap-4">
+          <Button variant="outline" className="text-choco border-choco hover:bg-choco/10" onClick={() => setIsEditing(true)}>
+            <Pencil className="ml-2 h-4 w-4" />
+            ערוך מתכון
+          </Button>
+          <Button asChild variant="outline" className="text-choco border-choco hover:bg-choco/10">
+            <Link to="/">
+              <ArrowRight className="ml-2 h-4 w-4" />
+              חזרה לדף הבית
+            </Link>
+          </Button>
+        </div>
       </header>
 
       <main className="w-full max-w-5xl">
