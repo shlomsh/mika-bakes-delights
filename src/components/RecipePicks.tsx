@@ -14,7 +14,7 @@ const picks = [
     label: "עוגיות שוקולד צ'יפס",
     desc: "עוגיות נימוחות עם המון שוקולד צ'יפס",
     price: "₪35 למארז", // Updated price
-    img: "https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?auto=format&fit=facearea&w=256&h=256&facepad=2&q=80", // Using the provided image for cookies
+    img: "/lovable-uploads/4987dbcd-1e75-4507-80c7-b7fc9ca1f7ee.png", // Updated image for cookies
     icon: <Cookie className="w-5 h-5 text-yellow-600" /> // Changed icon
   },
 ];
