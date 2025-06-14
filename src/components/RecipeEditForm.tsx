@@ -332,10 +332,11 @@ const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSav
                     name={`ingredients.${index}.description`}
                     render={({ field }) => (
                       <FormItem>
-                        <div className="flex items-center gap-2">
-                          <FormControl><Input {...field} placeholder={`מרכיב ${index + 1}`} /></FormControl>
-                          <Button type="button" variant="ghost" size="icon" onClick={() => removeIngredient(index)}>
-                            <Trash2 className="h-4 w-4 text-destructive" />
+                        <div className="flex items-center gap-3">
+                          <span className="text-gray-500 font-medium w-6 text-center">{index + 1}.</span>
+                          <FormControl><Input {...field} placeholder="לדוגמה: 2 כוסות קמח" /></FormControl>
+                          <Button type="button" variant="outline" size="icon" onClick={() => removeIngredient(index)} aria-label="מחק מרכיב">
+                            <Trash2 className="h-4 w-4 text-red-500" />
                           </Button>
                         </div>
                         <FormMessage />
@@ -344,7 +345,7 @@ const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSav
                   />
                 ))}
                 <Button type="button" variant="outline" onClick={() => appendIngredient({ description: '' })}>
-                  <PlusCircle className="ml-2 h-4 w-4" /> הוסף מרכיב
+                  <PlusCircle /> הוסף מרכיב
                 </Button>
               </CardContent>
             </Card>
@@ -362,10 +363,10 @@ const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSav
                     render={({ field }) => (
                       <FormItem>
                          <FormLabel>שלב {index + 1}</FormLabel>
-                        <div className="flex items-center gap-2">
-                          <FormControl><Textarea {...field} /></FormControl>
-                          <Button type="button" variant="ghost" size="icon" onClick={() => removeInstruction(index)}>
-                            <Trash2 className="h-4 w-4 text-destructive" />
+                        <div className="flex items-start gap-2">
+                          <FormControl><Textarea {...field} placeholder="תאר את שלב ההכנה..." /></FormControl>
+                          <Button type="button" variant="outline" size="icon" onClick={() => removeInstruction(index)} aria-label="מחק שלב">
+                            <Trash2 className="h-4 w-4 text-red-500" />
                           </Button>
                         </div>
                         <FormMessage />
@@ -374,7 +375,7 @@ const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSav
                   />
                 ))}
                 <Button type="button" variant="outline" onClick={() => appendInstruction({ description: '' })}>
-                  <PlusCircle className="ml-2 h-4 w-4" /> הוסף שלב
+                  <PlusCircle /> הוסף שלב
                 </Button>
               </CardContent>
             </Card>
@@ -397,10 +398,11 @@ const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSav
                         name={`sauce_ingredients.${index}.description`}
                         render={({ field }) => (
                           <FormItem>
-                            <div className="flex items-center gap-2">
-                              <FormControl><Input {...field} placeholder={`מצרך ${index + 1}`} /></FormControl>
-                              <Button type="button" variant="ghost" size="icon" onClick={() => removeSauceIngredient(index)}>
-                                <Trash2 className="h-4 w-4 text-destructive" />
+                            <div className="flex items-center gap-3">
+                              <span className="text-gray-500 font-medium w-6 text-center">{index + 1}.</span>
+                              <FormControl><Input {...field} placeholder="לדוגמה: 1/2 כוס שמן זית" /></FormControl>
+                              <Button type="button" variant="outline" size="icon" onClick={() => removeSauceIngredient(index)} aria-label="מחק מצרך לרוטב">
+                                <Trash2 className="h-4 w-4 text-red-500" />
                               </Button>
                             </div>
                             <FormMessage />
@@ -409,7 +411,7 @@ const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSav
                       />
                     ))}
                     <Button type="button" variant="outline" onClick={() => appendSauceIngredient({ description: '' })}>
-                      <PlusCircle className="ml-2 h-4 w-4" /> הוסף מצרך לרוטב
+                      <PlusCircle /> הוסף מצרך לרוטב
                     </Button>
                   </div>
                 </div>
@@ -425,10 +427,10 @@ const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSav
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>שלב {index + 1}</FormLabel>
-                            <div className="flex items-center gap-2">
-                              <FormControl><Textarea {...field} /></FormControl>
-                              <Button type="button" variant="ghost" size="icon" onClick={() => removeSauce(index)}>
-                                <Trash2 className="h-4 w-4 text-destructive" />
+                            <div className="flex items-start gap-2">
+                              <FormControl><Textarea {...field} placeholder="תאר את שלב הכנת הרוטב..." /></FormControl>
+                              <Button type="button" variant="outline" size="icon" onClick={() => removeSauce(index)} aria-label="מחק שלב מהרוטב">
+                                <Trash2 className="h-4 w-4 text-red-500" />
                               </Button>
                             </div>
                             <FormMessage />
@@ -437,7 +439,7 @@ const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSav
                       />
                     ))}
                     <Button type="button" variant="outline" onClick={() => appendSauce({ description: '' })}>
-                      <PlusCircle className="ml-2 h-4 w-4" /> הוסף שלב לרוטב
+                      <PlusCircle /> הוסף שלב לרוטב
                     </Button>
                   </div>
                 </div>
@@ -460,10 +462,10 @@ const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSav
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>שלב {index + 1}</FormLabel>
-                        <div className="flex items-center gap-2">
-                          <FormControl><Textarea {...field} /></FormControl>
-                          <Button type="button" variant="ghost" size="icon" onClick={() => removeGarnish(index)}>
-                            <Trash2 className="h-4 w-4 text-destructive" />
+                        <div className="flex items-start gap-2">
+                          <FormControl><Textarea {...field} placeholder="תאר את התוספת..." /></FormControl>
+                          <Button type="button" variant="outline" size="icon" onClick={() => removeGarnish(index)} aria-label="מחק שלב מהתוספת">
+                            <Trash2 className="h-4 w-4 text-red-500" />
                           </Button>
                         </div>
                         <FormMessage />
@@ -472,7 +474,7 @@ const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSav
                   />
                 ))}
                 <Button type="button" variant="outline" onClick={() => appendGarnish({ description: '' })}>
-                  <PlusCircle className="ml-2 h-4 w-4" /> הוסף שלב לתוספת
+                  <PlusCircle /> הוסף שלב לתוספת
                 </Button>
               </CardContent>
             </Card>
