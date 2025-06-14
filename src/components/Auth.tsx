@@ -1,0 +1,83 @@
+
+import { supabase } from '@/integrations/supabase/client';
+import { Auth } from '@supabase/auth-ui-react';
+import { ThemeSupa } from '@supabase/auth-ui-shared';
+import React, { useEffect, useState } from 'react';
+import { Session } from '@supabase/supabase-js';
+import { Button } from './ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
+import { useToast } from '@/hooks/use-toast';
+
+const AuthComponent = () => {
+    const [session, setSession] = useState<Session | null>(null);
+    const [isOpen, setIsOpen] = useState(false);
+    const { toast } = useToast();
+
+
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setSession(session);
+        });
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setSession(session);
+            if (_event === 'SIGNED_IN') {
+                setIsOpen(false);
+                 toast({ title: "התחברת בהצלחה!", description: `ברוך הבא, ${session?.user.email}` });
+            }
+             if (_event === 'SIGNED_OUT') {
+                toast({ title: "התנתקת בהצלחה" });
+            }
+        });
+
+        return () => subscription.unsubscribe();
+    }, [toast]);
+
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
+    };
+
+    if (session) {
+        return (
+            <div className="flex items-center gap-2">
+                <span className="text-sm text-choco hidden sm:inline">שלום, {session.user.email?.split('@')[0]}</span>
+                <Button onClick={handleLogout} variant="outline" className="text-choco border-choco hover:bg-choco/10">
+                    התנתק
+                </Button>
+            </div>
+        );
+    }
+
+    return (
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>
+                <Button variant="outline" className="text-choco border-choco hover:bg-choco/10">
+                    התחברות / הרשמה
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]" style={{ direction: 'ltr' }}>
+                <DialogHeader>
+                    <DialogTitle className="text-right font-fredoka text-choco">התחברות או הרשמה</DialogTitle>
+                </DialogHeader>
+                <div className="p-4">
+                    <Auth
+                        supabaseClient={supabase}
+                        appearance={{ theme: ThemeSupa }}
+                        providers={['google']}
+                        theme="light"
+                        localization={{
+                            variables: {
+                                sign_in: { email_label: 'כתובת אימייל', password_label: 'סיסמה', button_label: 'התחבר', social_provider_text: 'התחבר עם {{provider}}', link_text: 'כבר יש לך חשבון? התחבר', },
+                                sign_up: { email_label: 'כתובת אימייל', password_label: 'סיסמה', button_label: 'הירשם', social_provider_text: 'הירשם עם {{provider}}', link_text: 'אין לך חשבון? הירשם', },
+                                forgotten_password: { email_label: 'כתובת אימייל', button_label: 'שלח הוראות לאיפוס סיסמה', link_text: 'שכחת סיסמה?', },
+                                update_password: { password_label: 'סיסמה חדשה', button_label: 'עדכן סיסמה'}
+                            },
+                        }}
+                    />
+                </div>
+            </DialogContent>
+        </Dialog>
+    );
+};
+
+export default AuthComponent;

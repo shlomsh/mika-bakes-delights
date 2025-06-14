@@ -8,6 +8,8 @@ import { ArrowRight, ChefHat, ListChecks, Utensils, Pencil } from 'lucide-react'
 import { Recipe as BaseRecipe } from '@/data/sampleRecipes';
 import RecipeEditForm from '@/components/RecipeEditForm';
 import RecipeUpdateLogs from '@/components/RecipeUpdateLogs';
+import { useAuth } from '@/hooks/useAuth';
+import AuthComponent from '@/components/Auth';
 
 interface Ingredient {
   description: string;
@@ -70,6 +72,7 @@ const fetchRecipeById = async (recipeId: string): Promise<RecipeWithDetails | nu
 const RecipePage: React.FC = () => {
   const { recipeId } = useParams<{ recipeId: string }>();
   const [isEditing, setIsEditing] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   const { data: recipe, isLoading, error, refetch } = useQuery({
     queryKey: ['recipe', recipeId || null], 
@@ -132,16 +135,19 @@ const RecipePage: React.FC = () => {
           )}
         </div>
         <div className="flex items-center gap-4">
-          <Button variant="outline" className="text-choco border-choco hover:bg-choco/10" onClick={() => setIsEditing(true)}>
-            <Pencil className="ml-2 h-4 w-4" />
-            ערוך מתכון
-          </Button>
+          {isAuthenticated && (
+            <Button variant="outline" className="text-choco border-choco hover:bg-choco/10" onClick={() => setIsEditing(true)}>
+              <Pencil className="ml-2 h-4 w-4" />
+              ערוך מתכון
+            </Button>
+          )}
           <Button asChild variant="outline" className="text-choco border-choco hover:bg-choco/10">
             <Link to="/">
               <ArrowRight className="ml-2 h-4 w-4" />
               חזרה לדף הבית
             </Link>
           </Button>
+          <AuthComponent />
         </div>
       </header>
 

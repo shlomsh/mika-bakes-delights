@@ -55,6 +55,12 @@ interface RecipeEditFormProps {
 }
 
 async function updateRecipeInDb({ recipeId, values }: { recipeId: string, values: RecipeFormValues }) {
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("User not authenticated. Please log in to save changes.");
+  }
+  
   const { name, description, ingredients, instructions, image_file } = values;
 
   let newImageUrl: string | undefined = undefined;
@@ -123,18 +129,15 @@ async function updateRecipeInDb({ recipeId, values }: { recipeId: string, values
   }
 
   // Log the update
-  const { data: { user } } = await supabase.auth.getUser();
-  if (user) {
-      const { error: logError } = await supabase.from('recipe_update_logs').insert({
-          recipe_id: recipeId,
-          user_id: user.id,
-          changes: values as any,
-      });
+  const { error: logError } = await supabase.from('recipe_update_logs').insert({
+      recipe_id: recipeId,
+      user_id: user.id,
+      changes: values as any,
+  });
 
-      if (logError) {
-          // Log failure should not fail the entire operation, just log it to console.
-          console.error("Failed to log recipe update:", logError);
-      }
+  if (logError) {
+      // Log failure should not fail the entire operation, just log it to console.
+      console.error("Failed to log recipe update:", logError);
   }
 }
 
