@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { ArrowRight, ChefHat, ListChecks, Utensils, Pencil, Trash2 } from 'lucide-react';
+import { ArrowRight, ChefHat, ListChecks, Utensils, Pencil, Trash2, Blend, Sparkles } from 'lucide-react';
 import { Recipe as BaseRecipe } from '@/data/sampleRecipes';
 import RecipeEditForm from '@/components/RecipeEditForm';
 import RecipeUpdateLogs from '@/components/RecipeUpdateLogs';
@@ -33,9 +33,21 @@ interface Instruction {
   step_number: number;
 }
 
+interface Sauce {
+  description: string;
+  step_number: number;
+}
+
+interface Garnish {
+  description: string;
+  step_number: number;
+}
+
 type RecipeWithDetails = Omit<BaseRecipe, 'ingredients' | 'instructions'> & {
   recipe_ingredients: Ingredient[];
   recipe_instructions: Instruction[];
+  recipe_sauces: Sauce[];
+  recipe_garnishes: Garnish[];
   categories: {
     id: string;
     slug: string;
@@ -67,11 +79,21 @@ const fetchRecipeById = async (recipeId: string): Promise<RecipeWithDetails | nu
       recipe_instructions (
         description,
         step_number
+      ),
+      recipe_sauces (
+        description,
+        step_number
+      ),
+      recipe_garnishes (
+        description,
+        step_number
       )
     `)
     .eq('id', recipeId)
     .order('sort_order', { foreignTable: 'recipe_ingredients', ascending: true })
     .order('step_number', { foreignTable: 'recipe_instructions', ascending: true })
+    .order('step_number', { foreignTable: 'recipe_sauces', ascending: true })
+    .order('step_number', { foreignTable: 'recipe_garnishes', ascending: true })
     .single(); 
 
   if (error) {
@@ -237,6 +259,32 @@ const RecipePage: React.FC = () => {
                     <ul className="list-disc list-inside space-y-1 text-choco/90 bg-pastelYellow/20 p-4 rounded-md">
                       {recipe.recipe_ingredients.map((ingredient, index) => (
                         <li key={index}>{ingredient.description}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {recipe.recipe_sauces && recipe.recipe_sauces.length > 0 && (
+                  <div className="mb-6">
+                    <h2 className="font-fredoka text-xl text-choco mb-2 flex items-center">
+                      <Blend className="mr-2 text-pastelOrange" />
+                      רוטב:
+                    </h2>
+                    <ul className="list-disc list-inside space-y-1 text-choco/90 bg-pastelYellow/20 p-4 rounded-md">
+                      {recipe.recipe_sauces.map((step) => (
+                        <li key={step.step_number}>{step.description}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {recipe.recipe_garnishes && recipe.recipe_garnishes.length > 0 && (
+                  <div className="mb-6">
+                    <h2 className="font-fredoka text-xl text-choco mb-2 flex items-center">
+                      <Sparkles className="mr-2 text-pastelYellow" />
+                      תוספת:
+                    </h2>
+                    <ul className="list-disc list-inside space-y-1 text-choco/90 bg-pastelYellow/20 p-4 rounded-md">
+                      {recipe.recipe_garnishes.map((step) => (
+                        <li key={step.step_number}>{step.description}</li>
                       ))}
                     </ul>
                   </div>

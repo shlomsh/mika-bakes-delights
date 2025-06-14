@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { PlusCircle, Trash2, Loader2, Save } from 'lucide-react';
+import { PlusCircle, Trash2, Loader2, Save, Blend, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Recipe as BaseRecipe } from '@/data/sampleRecipes';
 
@@ -24,9 +24,21 @@ interface Instruction {
   step_number: number;
 }
 
+interface Sauce {
+  description: string;
+  step_number: number;
+}
+
+interface Garnish {
+  description: string;
+  step_number: number;
+}
+
 type RecipeWithDetails = Omit<BaseRecipe, 'ingredients' | 'instructions'> & {
   recipe_ingredients: Ingredient[];
   recipe_instructions: Instruction[];
+  recipe_sauces: Sauce[];
+  recipe_garnishes: Garnish[];
   categories: {
     id: string;
     slug: string;
@@ -43,7 +55,13 @@ const formSchema = z.object({
   })),
   instructions: z.array(z.object({
     description: z.string().min(1, { message: "תיאור ההוראה לא יכול להיות ריק." })
-  }))
+  })),
+  sauces: z.array(z.object({
+    description: z.string().min(1, { message: "תיאור הרוטב לא יכול להיות ריק." })
+  })).optional(),
+  garnishes: z.array(z.object({
+    description: z.string().min(1, { message: "תיאור התוספת לא יכול להיות ריק." })
+  })).optional(),
 });
 
 type RecipeFormValues = z.infer<typeof formSchema>;
@@ -61,7 +79,7 @@ async function updateRecipeInDb({ recipeId, values }: { recipeId: string, values
     throw new Error("User not authenticated. Please log in to save changes.");
   }
   
-  const { name, description, ingredients, instructions, image_file } = values;
+  const { name, description, ingredients, instructions, sauces, garnishes, image_file } = values;
 
   let newImageUrl: string | undefined = undefined;
 
@@ -128,6 +146,34 @@ async function updateRecipeInDb({ recipeId, values }: { recipeId: string, values
     if (insertInstructionsError) throw insertInstructionsError;
   }
 
+  // Update sauces
+  const { error: deleteSaucesError } = await supabase.from('recipe_sauces').delete().eq('recipe_id', recipeId);
+  if (deleteSaucesError) throw deleteSaucesError;
+
+  if (sauces && sauces.length > 0) {
+    const newSauces = sauces.map((s, index) => ({
+      recipe_id: recipeId,
+      description: s.description,
+      step_number: index + 1
+    }));
+    const { error: insertSaucesError } = await supabase.from('recipe_sauces').insert(newSauces);
+    if (insertSaucesError) throw insertSaucesError;
+  }
+
+  // Update garnishes
+  const { error: deleteGarnishesError } = await supabase.from('recipe_garnishes').delete().eq('recipe_id', recipeId);
+  if (deleteGarnishesError) throw deleteGarnishesError;
+
+  if (garnishes && garnishes.length > 0) {
+    const newGarnishes = garnishes.map((g, index) => ({
+      recipe_id: recipeId,
+      description: g.description,
+      step_number: index + 1
+    }));
+    const { error: insertGarnishesError } = await supabase.from('recipe_garnishes').insert(newGarnishes);
+    if (insertGarnishesError) throw insertGarnishesError;
+  }
+
   // Log the update
   const { error: logError } = await supabase.from('recipe_update_logs').insert({
       recipe_id: recipeId,
@@ -152,6 +198,8 @@ const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSav
       description: recipe.description || '',
       ingredients: recipe.recipe_ingredients.map(i => ({ description: i.description })),
       instructions: recipe.recipe_instructions.map(i => ({ description: i.description })),
+      sauces: recipe.recipe_sauces?.map(s => ({ description: s.description })) || [],
+      garnishes: recipe.recipe_garnishes?.map(g => ({ description: g.description })) || [],
     },
   });
 
@@ -163,6 +211,14 @@ const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSav
 
   const { fields: instructionFields, append: appendInstruction, remove: removeInstruction } = useFieldArray({
     control: form.control, name: "instructions"
+  });
+
+  const { fields: sauceFields, append: appendSauce, remove: removeSauce } = useFieldArray({
+    control: form.control, name: "sauces"
+  });
+
+  const { fields: garnishFields, append: appendGarnish, remove: removeGarnish } = useFieldArray({
+    control: form.control, name: "garnishes"
   });
 
   const mutation = useMutation({
@@ -303,6 +359,72 @@ const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSav
                 ))}
                 <Button type="button" variant="outline" onClick={() => appendInstruction({ description: '' })}>
                   <PlusCircle className="ml-2 h-4 w-4" /> הוסף שלב
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="font-fredoka text-xl text-choco flex items-center">
+                  <Blend className="ml-2 h-5 w-5 text-pastelOrange" />
+                  רוטב (אופציונלי)
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {sauceFields.map((field, index) => (
+                  <FormField
+                    key={field.id}
+                    control={form.control}
+                    name={`sauces.${index}.description`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>שלב {index + 1}</FormLabel>
+                        <div className="flex items-center gap-2">
+                          <FormControl><Textarea {...field} /></FormControl>
+                          <Button type="button" variant="ghost" size="icon" onClick={() => removeSauce(index)}>
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ))}
+                <Button type="button" variant="outline" onClick={() => appendSauce({ description: '' })}>
+                  <PlusCircle className="ml-2 h-4 w-4" /> הוסף שלב לרוטב
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="font-fredoka text-xl text-choco flex items-center">
+                  <Sparkles className="ml-2 h-5 w-5 text-pastelYellow" />
+                  תוספת (אופציונלי)
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {garnishFields.map((field, index) => (
+                  <FormField
+                    key={field.id}
+                    control={form.control}
+                    name={`garnishes.${index}.description`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>שלב {index + 1}</FormLabel>
+                        <div className="flex items-center gap-2">
+                          <FormControl><Textarea {...field} /></FormControl>
+                          <Button type="button" variant="ghost" size="icon" onClick={() => removeGarnish(index)}>
+                            <Trash2 className="h-4 w-4 text-destructive" />
+                          </Button>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ))}
+                <Button type="button" variant="outline" onClick={() => appendGarnish({ description: '' })}>
+                  <PlusCircle className="ml-2 h-4 w-4" /> הוסף שלב לתוספת
                 </Button>
               </CardContent>
             </Card>

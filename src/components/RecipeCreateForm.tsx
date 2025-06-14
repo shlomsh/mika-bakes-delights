@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PlusCircle, Trash2, Loader2, Save } from 'lucide-react';
+import { PlusCircle, Trash2, Loader2, Save, Blend, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 
@@ -23,7 +22,13 @@ const formSchema = z.object({
   })).min(1, "יש להוסיף לפחות מרכיב אחד."),
   instructions: z.array(z.object({
     description: z.string().min(1, { message: "תיאור ההוראה לא יכול להיות ריק." })
-  })).min(1, "יש להוסיף לפחות שלב הכנה אחד.")
+  })).min(1, "יש להוסיף לפחות שלב הכנה אחד."),
+  sauces: z.array(z.object({
+    description: z.string().min(1, { message: "תיאור הרוטב לא יכול להיות ריק." })
+  })).optional(),
+  garnishes: z.array(z.object({
+    description: z.string().min(1, { message: "תיאור התוספת לא יכול להיות ריק." })
+  })).optional(),
 });
 
 type RecipeFormValues = z.infer<typeof formSchema>;
@@ -35,7 +40,7 @@ async function createRecipeInDb({ values }: { values: RecipeFormValues }) {
     throw new Error("User not authenticated. Please log in to save changes.");
   }
   
-  const { name, description, ingredients, instructions, image_file } = values;
+  const { name, description, ingredients, instructions, sauces, garnishes, image_file } = values;
 
   // 1. Create recipe and get its ID
   const { data: recipeData, error: recipeError } = await supabase
@@ -100,6 +105,28 @@ async function createRecipeInDb({ values }: { values: RecipeFormValues }) {
     const { error: insertInstructionsError } = await supabase.from('recipe_instructions').insert(newInstructions);
     if (insertInstructionsError) throw insertInstructionsError;
   }
+
+  // 5. Insert sauces
+  if (sauces && sauces.length > 0) {
+    const newSauces = sauces.map((s, index) => ({
+      recipe_id: recipeId,
+      description: s.description,
+      step_number: index + 1
+    }));
+    const { error: insertSaucesError } = await supabase.from('recipe_sauces').insert(newSauces);
+    if (insertSaucesError) throw insertSaucesError;
+  }
+
+  // 6. Insert garnishes
+  if (garnishes && garnishes.length > 0) {
+    const newGarnishes = garnishes.map((g, index) => ({
+      recipe_id: recipeId,
+      description: g.description,
+      step_number: index + 1
+    }));
+    const { error: insertGarnishesError } = await supabase.from('recipe_garnishes').insert(newGarnishes);
+    if (insertGarnishesError) throw insertGarnishesError;
+  }
   
   // Return recipeId for redirection
   return recipeId;
@@ -118,6 +145,8 @@ const RecipeCreateForm: React.FC = () => {
       description: '',
       ingredients: [{ description: '' }],
       instructions: [{ description: '' }],
+      sauces: [],
+      garnishes: [],
     },
   });
 
@@ -129,6 +158,14 @@ const RecipeCreateForm: React.FC = () => {
 
   const { fields: instructionFields, append: appendInstruction, remove: removeInstruction } = useFieldArray({
     control: form.control, name: "instructions"
+  });
+
+  const { fields: sauceFields, append: appendSauce, remove: removeSauce } = useFieldArray({
+    control: form.control, name: "sauces"
+  });
+
+  const { fields: garnishFields, append: appendGarnish, remove: removeGarnish } = useFieldArray({
+    control: form.control, name: "garnishes"
   });
 
   const mutation = useMutation({
@@ -254,7 +291,7 @@ const RecipeCreateForm: React.FC = () => {
                 name={`instructions.${index}.description`}
                 render={({ field }) => (
                   <FormItem>
-                     <FormLabel>שלב {index + 1}</FormLabel>
+                    <FormLabel>שלב {index + 1}</FormLabel>
                     <div className="flex items-center gap-2">
                       <FormControl><Textarea {...field} /></FormControl>
                       <Button type="button" variant="ghost" size="icon" onClick={() => removeInstruction(index)}>
@@ -268,6 +305,72 @@ const RecipeCreateForm: React.FC = () => {
             ))}
             <Button type="button" variant="outline" onClick={() => appendInstruction({ description: '' })}>
               <PlusCircle className="ml-2 h-4 w-4" /> הוסף שלב
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-fredoka text-xl text-choco flex items-center">
+              <Blend className="ml-2 h-5 w-5 text-pastelOrange" />
+              רוטב (אופציונלי)
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {sauceFields.map((field, index) => (
+              <FormField
+                key={field.id}
+                control={form.control}
+                name={`sauces.${index}.description`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>שלב {index + 1}</FormLabel>
+                    <div className="flex items-center gap-2">
+                      <FormControl><Textarea {...field} /></FormControl>
+                      <Button type="button" variant="ghost" size="icon" onClick={() => removeSauce(index)}>
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ))}
+            <Button type="button" variant="outline" onClick={() => appendSauce({ description: '' })}>
+              <PlusCircle className="ml-2 h-4 w-4" /> הוסף שלב לרוטב
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-fredoka text-xl text-choco flex items-center">
+              <Sparkles className="ml-2 h-5 w-5 text-pastelYellow" />
+              תוספת (אופציונלי)
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {garnishFields.map((field, index) => (
+              <FormField
+                key={field.id}
+                control={form.control}
+                name={`garnishes.${index}.description`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>שלב {index + 1}</FormLabel>
+                    <div className="flex items-center gap-2">
+                      <FormControl><Textarea {...field} /></FormControl>
+                      <Button type="button" variant="ghost" size="icon" onClick={() => removeGarnish(index)}>
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                      </Button>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ))}
+            <Button type="button" variant="outline" onClick={() => appendGarnish({ description: '' })}>
+              <PlusCircle className="ml-2 h-4 w-4" /> הוסף שלב לתוספת
             </Button>
           </CardContent>
         </Card>
