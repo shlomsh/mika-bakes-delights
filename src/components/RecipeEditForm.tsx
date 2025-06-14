@@ -29,6 +29,11 @@ interface Sauce {
   step_number: number;
 }
 
+interface SauceIngredient {
+  description: string;
+  sort_order: number;
+}
+
 interface Garnish {
   description: string;
   step_number: number;
@@ -38,6 +43,7 @@ type RecipeWithDetails = Omit<BaseRecipe, 'ingredients' | 'instructions'> & {
   recipe_ingredients: Ingredient[];
   recipe_instructions: Instruction[];
   recipe_sauces: Sauce[];
+  recipe_sauce_ingredients: SauceIngredient[];
   recipe_garnishes: Garnish[];
   categories: {
     id: string;
@@ -56,6 +62,9 @@ const formSchema = z.object({
   instructions: z.array(z.object({
     description: z.string().min(1, { message: "תיאור ההוראה לא יכול להיות ריק." })
   })),
+  sauce_ingredients: z.array(z.object({
+    description: z.string().min(1, { message: "תיאור המרכיב לרוטב לא יכול להיות ריק." })
+  })).optional(),
   sauces: z.array(z.object({
     description: z.string().min(1, { message: "תיאור הרוטב לא יכול להיות ריק." })
   })).optional(),
@@ -79,7 +88,7 @@ async function updateRecipeInDb({ recipeId, values }: { recipeId: string, values
     throw new Error("User not authenticated. Please log in to save changes.");
   }
   
-  const { name, description, ingredients, instructions, sauces, garnishes, image_file } = values;
+  const { name, description, ingredients, instructions, sauces, garnishes, image_file, sauce_ingredients } = values;
 
   let newImageUrl: string | undefined = undefined;
 
@@ -146,6 +155,20 @@ async function updateRecipeInDb({ recipeId, values }: { recipeId: string, values
     if (insertInstructionsError) throw insertInstructionsError;
   }
 
+  // Update sauce ingredients
+  const { error: deleteSauceIngredientsError } = await supabase.from('recipe_sauce_ingredients').delete().eq('recipe_id', recipeId);
+  if (deleteSauceIngredientsError) throw deleteSauceIngredientsError;
+
+  if (sauce_ingredients && sauce_ingredients.length > 0) {
+    const newSauceIngredients = sauce_ingredients.map((ing, index) => ({
+      recipe_id: recipeId,
+      description: ing.description,
+      sort_order: index + 1
+    }));
+    const { error: insertSauceIngredientsError } = await supabase.from('recipe_sauce_ingredients').insert(newSauceIngredients);
+    if (insertSauceIngredientsError) throw insertSauceIngredientsError;
+  }
+
   // Update sauces
   const { error: deleteSaucesError } = await supabase.from('recipe_sauces').delete().eq('recipe_id', recipeId);
   if (deleteSaucesError) throw deleteSaucesError;
@@ -186,6 +209,7 @@ const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSav
       description: recipe.description || '',
       ingredients: recipe.recipe_ingredients.map(i => ({ description: i.description })),
       instructions: recipe.recipe_instructions.map(i => ({ description: i.description })),
+      sauce_ingredients: recipe.recipe_sauce_ingredients?.map(s => ({ description: s.description })) || [],
       sauces: recipe.recipe_sauces?.map(s => ({ description: s.description })) || [],
       garnishes: recipe.recipe_garnishes?.map(g => ({ description: g.description })) || [],
     },
@@ -199,6 +223,10 @@ const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSav
 
   const { fields: instructionFields, append: appendInstruction, remove: removeInstruction } = useFieldArray({
     control: form.control, name: "instructions"
+  });
+
+  const { fields: sauceIngredientFields, append: appendSauceIngredient, remove: removeSauceIngredient } = useFieldArray({
+    control: form.control, name: "sauce_ingredients"
   });
 
   const { fields: sauceFields, append: appendSauce, remove: removeSauce } = useFieldArray({
@@ -358,29 +386,61 @@ const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSav
                   רוטב (אופציונלי)
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                {sauceFields.map((field, index) => (
-                  <FormField
-                    key={field.id}
-                    control={form.control}
-                    name={`sauces.${index}.description`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>שלב {index + 1}</FormLabel>
-                        <div className="flex items-center gap-2">
-                          <FormControl><Textarea {...field} /></FormControl>
-                          <Button type="button" variant="ghost" size="icon" onClick={() => removeSauce(index)}>
-                            <Trash2 className="h-4 w-4 text-destructive" />
-                          </Button>
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                ))}
-                <Button type="button" variant="outline" onClick={() => appendSauce({ description: '' })}>
-                  <PlusCircle className="ml-2 h-4 w-4" /> הוסף שלב לרוטב
-                </Button>
+              <CardContent className="space-y-6">
+                <div>
+                  <FormLabel className="font-fredoka text-lg text-choco">מצרכים לרוטב</FormLabel>
+                  <div className="space-y-4 mt-2">
+                    {sauceIngredientFields.map((field, index) => (
+                      <FormField
+                        key={field.id}
+                        control={form.control}
+                        name={`sauce_ingredients.${index}.description`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <div className="flex items-center gap-2">
+                              <FormControl><Input {...field} placeholder={`מצרך ${index + 1}`} /></FormControl>
+                              <Button type="button" variant="ghost" size="icon" onClick={() => removeSauceIngredient(index)}>
+                                <Trash2 className="h-4 w-4 text-destructive" />
+                              </Button>
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    ))}
+                    <Button type="button" variant="outline" onClick={() => appendSauceIngredient({ description: '' })}>
+                      <PlusCircle className="ml-2 h-4 w-4" /> הוסף מצרך לרוטב
+                    </Button>
+                  </div>
+                </div>
+
+                <div>
+                  <FormLabel className="font-fredoka text-lg text-choco mt-4">אופן הכנת הרוטב</FormLabel>
+                  <div className="space-y-4 mt-2">
+                    {sauceFields.map((field, index) => (
+                      <FormField
+                        key={field.id}
+                        control={form.control}
+                        name={`sauces.${index}.description`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>שלב {index + 1}</FormLabel>
+                            <div className="flex items-center gap-2">
+                              <FormControl><Textarea {...field} /></FormControl>
+                              <Button type="button" variant="ghost" size="icon" onClick={() => removeSauce(index)}>
+                                <Trash2 className="h-4 w-4 text-destructive" />
+                              </Button>
+                            </div>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    ))}
+                    <Button type="button" variant="outline" onClick={() => appendSauce({ description: '' })}>
+                      <PlusCircle className="ml-2 h-4 w-4" /> הוסף שלב לרוטב
+                    </Button>
+                  </div>
+                </div>
               </CardContent>
             </Card>
 

@@ -138,6 +138,38 @@ export type Database = {
           },
         ]
       }
+      recipe_sauce_ingredients: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          recipe_id: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          recipe_id: string
+          sort_order: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          recipe_id?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recipe_sauce_ingredients_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "recipes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       recipe_sauces: {
         Row: {
           created_at: string

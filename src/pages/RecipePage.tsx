@@ -39,6 +39,10 @@ const fetchRecipeById = async (recipeId: string): Promise<RecipeWithDetails | nu
         description,
         step_number
       ),
+      recipe_sauce_ingredients (
+        description,
+        sort_order
+      ),
       recipe_garnishes (
         description,
         step_number
@@ -48,6 +52,7 @@ const fetchRecipeById = async (recipeId: string): Promise<RecipeWithDetails | nu
     .order('sort_order', { foreignTable: 'recipe_ingredients', ascending: true })
     .order('step_number', { foreignTable: 'recipe_instructions', ascending: true })
     .order('step_number', { foreignTable: 'recipe_sauces', ascending: true })
+    .order('sort_order', { foreignTable: 'recipe_sauce_ingredients', ascending: true })
     .order('step_number', { foreignTable: 'recipe_garnishes', ascending: true })
     .single(); 
 
