@@ -1,3 +1,4 @@
+
 import React from "react";
 const MikaHero: React.FC = () => <section className="relative bg-pastelYellow rounded-3xl shadow-lg p-8 flex flex-col lg:flex-row-reverse items-center w-full h-full min-h-[380px] justify-between overflow-hidden gap-8" dir="rtl">
     {/* Image section */}
@@ -8,7 +9,7 @@ const MikaHero: React.FC = () => <section className="relative bg-pastelYellow ro
     }} />
     </div>
     {/* Text section */}
-    <div className="flex-1 flex flex-col items-end justify-center">
+    <div className="flex-1 flex flex-col items-start justify-center text-right">
       <span className="bg-white/80 text-choco font-fredoka text-xl px-4 py-1 rounded-full shadow mb-2 font-bold">
         הכירו את מיקה!
       </span>
@@ -17,7 +18,7 @@ const MikaHero: React.FC = () => <section className="relative bg-pastelYellow ro
     }}>
         מיקה - שפית <span className="text-orange-500">צעירה</span> בת 14
       </span>
-      <p className="mt-2 text-lg text-choco text-right max-w-lg font-inter">
+      <p className="mt-2 text-lg text-choco max-w-lg font-inter">
         מיקה היא בת ה-14 של המשפחה וכבר אלופה גדולה במטבח! האהבה הכי גדולה שלה היא <span className="font-bold text-orange-500">קונדיטוריה</span> ו-<span className="font-bold text-orange-500">מאפים</span>. כאן תמצאו את כל המתכונים הכי שווים שלה – מתוקים, מלוחים וביתיים.
       </p>
     </div>
