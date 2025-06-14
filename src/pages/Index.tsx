@@ -66,8 +66,8 @@ const Index = () => {
     queryFn: fetchCategories,
   });
 
-  const createMutation = useMutation<void, Error, CategoryFormValues>({
-    mutationFn: async (values) => {
+  const createMutation = useMutation({
+    mutationFn: async (values: CategoryFormValues) => {
       const { error } = await supabase.from('categories').insert(values);
       if (error) throw error;
     },
@@ -81,8 +81,8 @@ const Index = () => {
     },
   });
 
-  const updateMutation = useMutation<void, Error, Partial<CategoryFormValues>>({
-    mutationFn: async (values) => {
+  const updateMutation = useMutation({
+    mutationFn: async (values: CategoryFormValues) => {
       if (!editingCategory) return;
       const { error } = await supabase.from('categories').update(values).eq('id', editingCategory.id);
       if (error) throw error;
