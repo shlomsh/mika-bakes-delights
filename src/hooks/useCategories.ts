@@ -1,8 +1,7 @@
-
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import type { Tables } from "@/integrations/supabase/types";
+import type { Tables, TablesInsert, TablesUpdate } from "@/integrations/supabase/types";
 import * as z from 'zod';
 import { categoryFormSchema } from "@/components/CategoryForm";
 
@@ -29,7 +28,13 @@ export const useCategories = () => {
 
   const createMutation = useMutation<void, Error, CategoryFormValues>({
     mutationFn: async (values) => {
-      const { error } = await supabase.from('categories').insert(values);
+      const payload: TablesInsert<'categories'> = {
+        ...values,
+        description: values.description ?? null,
+        color: values.color ?? null,
+        icon: values.icon ?? null,
+      };
+      const { error } = await supabase.from('categories').insert(payload);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -42,13 +47,13 @@ export const useCategories = () => {
 
   const updateMutation = useMutation<void, Error, { values: CategoryFormValues, id: string }>({
     mutationFn: async ({ values, id }) => {
-      const { error } = await supabase.from('categories').update({
-        name: values.name,
-        slug: values.slug,
-        description: values.description,
-        color: values.color,
-        icon: values.icon,
-      }).eq('id', id);
+      const payload: TablesUpdate<'categories'> = {
+        ...values,
+        description: values.description ?? null,
+        color: values.color ?? null,
+        icon: values.icon ?? null,
+      };
+      const { error } = await supabase.from('categories').update(payload).eq('id', id);
       if (error) throw error;
     },
     onSuccess: () => {
