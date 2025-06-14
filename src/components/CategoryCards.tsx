@@ -1,31 +1,7 @@
 
 import React from "react";
-import { Link } from "react-router-dom"; // Import Link
-import { Cake, Utensils, BookOpen } from "lucide-react";
-
-const categories = [
-  {
-    label: "קינוחים",
-    slug: "desserts", // Added slug for URL
-    color: "bg-rose-200",
-    icon: Cake,
-    desc: "עוגות, עוגיות, פודינגים וטעמים מתוקים לילדים ולמבוגרים"
-  },
-  {
-    label: "מאפים מלוחים",
-    slug: "savory-pastries", // Added slug for URL
-    color: "bg-pink-100",
-    icon: Utensils,
-    desc: "בצקים, לחמים, פשטידות ומגוון מאפים שאוהבים"
-  },
-  {
-    label: "תבשילים",
-    slug: "stews", // Added slug for URL
-    color: "bg-rose-100",
-    icon: BookOpen,
-    desc: "מנות ביתיות, תבשילי משפחה ומאכלים מנחמים"
-  }
-];
+import { Link } from "react-router-dom";
+import { categories } from "@/data/categoriesData";
 
 const CategoryCards: React.FC = () => (
   <aside className="flex flex-col gap-6 w-full" dir="rtl">
