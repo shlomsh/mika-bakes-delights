@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -51,6 +50,21 @@ const RecipePage: React.FC = () => {
     enabled: !!recipeId,
   });
 
+  // Move useMemo hooks to the top level, before conditional returns.
+  // Handle cases where 'recipe' might be null or undefined.
+  const ingredientsArray = React.useMemo(() => {
+    if (!recipe || !recipe.ingredients) return [];
+    if (Array.isArray(recipe.ingredients)) return recipe.ingredients as string[];
+    // Add more parsing logic if ingredients can be objects or other types
+    console.warn("Recipe ingredients are in an unexpected format:", recipe.ingredients);
+    return [];
+  }, [recipe]);
+
+  const instructionsArray = React.useMemo(() => {
+    if (!recipe || !recipe.instructions) return [];
+    return recipe.instructions.split('\n').filter(line => line.trim() !== '');
+  }, [recipe]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen w-full flex flex-col items-center justify-center p-8" style={{ background: "#faf9f7", direction: "rtl" }}>
@@ -82,18 +96,6 @@ const RecipePage: React.FC = () => {
       </div>
     );
   }
-
-  const ingredientsArray = React.useMemo(() => {
-    if (!recipe.ingredients) return [];
-    if (Array.isArray(recipe.ingredients)) return recipe.ingredients as string[]; // Assuming ingredients is string[]
-    // Add more parsing logic if ingredients can be objects
-    return [];
-  }, [recipe.ingredients]);
-
-  const instructionsArray = React.useMemo(() => {
-    if (!recipe.instructions) return [];
-    return recipe.instructions.split('\n').filter(line => line.trim() !== '');
-  }, [recipe.instructions]);
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center p-4 md:p-8" style={{ background: "#faf9f7", direction: "rtl" }}>
@@ -169,4 +171,3 @@ const RecipePage: React.FC = () => {
 };
 
 export default RecipePage;
-
