@@ -7,7 +7,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { ArrowRight, ChefHat, ListChecks, Utensils, Pencil, Trash2, Blend, Sparkles } from 'lucide-react';
 import { Recipe as BaseRecipe } from '@/data/sampleRecipes';
 import RecipeEditForm from '@/components/RecipeEditForm';
-import RecipeUpdateLogs from '@/components/RecipeUpdateLogs';
 import { useAuth } from '@/hooks/useAuth';
 import AuthComponent from '@/components/Auth';
 import { useToast } from '@/hooks/use-toast';
@@ -314,7 +313,6 @@ const RecipePage: React.FC = () => {
             </CardFooter>
           )}
         </Card>
-        <RecipeUpdateLogs recipeId={recipe.id} />
       </main>
     </div>
   );
