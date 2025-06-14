@@ -1,17 +1,10 @@
+
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import * as z from 'zod';
 
 import MikaHero from "../components/MikaHero";
 import CategoryCards from "../components/CategoryCards";
 import RecipePicks from "../components/RecipePicks";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
@@ -30,93 +23,33 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-import { Link } from "react-router-dom";
-import { ChevronDown, Plus } from "lucide-react";
-import AuthComponent from "@/components/Auth";
+import { Plus } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import type { Tables } from "@/integrations/supabase/types";
 import CategoryForm, { categoryFormSchema } from "@/components/CategoryForm";
 import { useToast } from "@/components/ui/use-toast";
+import { useCategories } from "@/hooks/useCategories";
+import AppHeader from "@/components/AppHeader";
 
 type Category = Tables<'categories'>;
 type CategoryFormValues = z.infer<typeof categoryFormSchema>;
 
-const fetchCategories = async (): Promise<Category[]> => {
-  const { data, error } = await supabase.from('categories').select('*').order('name');
-  if (error) {
-    console.error("Error fetching categories:", error);
-    throw new Error(error.message);
-  }
-  return data || [];
-};
-
 const Index = () => {
   const { isAuthenticated } = useAuth();
-  const queryClient = useQueryClient();
   const { toast } = useToast();
+  
+  const { 
+    categories, 
+    isLoadingCategories, 
+    createCategory, 
+    updateCategory, 
+    deleteCategory 
+  } = useCategories();
 
   const [isFormOpen, setFormOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [deletingCategory, setDeletingCategory] = useState<Category | null>(null);
-
-  const { data: categories, isLoading: isLoadingCategories } = useQuery({
-    queryKey: ['categories'],
-    queryFn: fetchCategories,
-  });
-
-  const createMutation = useMutation<void, Error, CategoryFormValues>({
-    mutationFn: async (values) => {
-      const { error } = await supabase.from('categories').insert(values);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      toast({ title: "הצלחה!", description: "הקטגוריה נוצרה בהצלחה." });
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
-      setFormOpen(false);
-    },
-    onError: (err: Error) => {
-      toast({ variant: "destructive", title: "שגיאה", description: `יצירת הקטגוריה נכשלה: ${err.message}` });
-    },
-  });
-
-  const updateMutation = useMutation<void, Error, CategoryFormValues>({
-    mutationFn: async (values) => {
-      if (!editingCategory) return;
-      const { error } = await supabase.from('categories').update({
-        name: values.name,
-        slug: values.slug,
-        description: values.description,
-        color: values.color,
-        icon: values.icon,
-      }).eq('id', editingCategory.id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      toast({ title: "הצלחה!", description: "הקטגוריה עודכנה בהצלחה." });
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
-      setFormOpen(false);
-      setEditingCategory(null);
-    },
-    onError: (err: Error) => {
-      toast({ variant: "destructive", title: "שגיאה", description: `עדכון הקטגוריה נכשל: ${err.message}` });
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async (categoryId: string) => {
-      const { error } = await supabase.from('categories').delete().eq('id', categoryId);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      toast({ title: "הצלחה!", description: "הקטגוריה נמחקה בהצלחה." });
-      queryClient.invalidateQueries({ queryKey: ['categories'] });
-      setDeletingCategory(null);
-    },
-    onError: (err: Error) => {
-      toast({ variant: "destructive", title: "שגיאה", description: `מחיקת הקטגוריה נכשלה: ${err.message}` });
-    },
-  });
 
   const handleEdit = (category: Category) => {
     setEditingCategory(category);
@@ -129,9 +62,31 @@ const Index = () => {
 
   const handleFormSubmit = (values: CategoryFormValues) => {
     if (editingCategory) {
-      updateMutation.mutate(values);
+      updateCategory.mutate({ values, id: editingCategory.id }, {
+        onSuccess: () => {
+          toast({ title: "הצלחה!", description: "הקטגוריה עודכנה בהצלחה." });
+          setFormOpen(false);
+          setEditingCategory(null);
+        }
+      });
     } else {
-      createMutation.mutate(values);
+      createCategory.mutate(values, {
+        onSuccess: () => {
+          toast({ title: "הצלחה!", description: "הקטגוריה נוצרה בהצלחה." });
+          setFormOpen(false);
+        }
+      });
+    }
+  };
+
+  const handleDeleteConfirm = () => {
+    if (deletingCategory) {
+      deleteCategory.mutate(deletingCategory.id, {
+        onSuccess: () => {
+          toast({ title: "הצלחה!", description: "הקטגוריה נמחקה בהצלחה." });
+          setDeletingCategory(null);
+        }
+      });
     }
   };
 
@@ -142,50 +97,7 @@ const Index = () => {
 
   return (
     <main className="min-h-screen w-full flex flex-col" style={{background: "#faf9f7", direction: "rtl"}}>
-      {/* Header / Navbar */}
-      <header className="w-full flex flex-col sm:flex-row items-center sm:justify-between gap-4 sm:gap-0 py-4 px-6 bg-white border-b border-gray-100 shadow-sm">
-        {/* ... keep existing code */}
-        <div className="flex items-center gap-3 flex-row-reverse">
-          <div className="w-10 h-10 rounded-full bg-pastelYellow flex items-center justify-center font-fredoka text-xl shadow-inner border">
-            מ
-          </div>
-          <span className="font-fredoka text-2xl text-choco tracking-tight">ספר המתכונים של מיקה</span>
-        </div>
-        <div className="flex items-center gap-6">
-          <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 sm:gap-7 font-fredoka text-choco text-lg flex-row-reverse sm:flex-nowrap">
-            <a className="hover:text-pastelOrange transition" href="#">בית</a>
-            <a className="hover:text-pastelOrange transition" href="#">על מיקה</a>
-            <DropdownMenu dir="rtl">
-              <DropdownMenuTrigger className="flex items-center gap-1 hover:text-pastelOrange transition outline-none">
-                קטגוריות
-                <ChevronDown className="w-4 h-4" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                {categories?.map((category) => (
-                  <DropdownMenuItem key={category.slug} asChild>
-                    <Link to={`/category/${category.slug}`}>
-                      {category.name}
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <a className="hover:text-pastelOrange transition" href="#">מועדפים</a>
-          </nav>
-          <div className="flex items-center gap-4">
-            {/* ... keep existing code */}
-            {isAuthenticated && (
-              <Button asChild>
-                <Link to="/new-recipe">
-                  <Plus className="ml-2 h-4 w-4" />
-                  הוסף מתכון
-                </Link>
-              </Button>
-            )}
-            <AuthComponent />
-          </div>
-        </div>
-      </header>
+      <AppHeader categories={categories} isAuthenticated={isAuthenticated} />
 
       {/* Main 2-column desktop grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 px-8 py-14 max-w-7xl mx-auto w-full flex-1 transition-all">
@@ -243,7 +155,7 @@ const Index = () => {
           <CategoryForm 
             category={editingCategory}
             onSubmit={handleFormSubmit}
-            isSubmitting={createMutation.isPending || updateMutation.isPending}
+            isSubmitting={createCategory.isPending || updateCategory.isPending}
           />
         </DialogContent>
       </Dialog>
@@ -259,11 +171,11 @@ const Index = () => {
           <AlertDialogFooter>
             <AlertDialogCancel onClick={() => setDeletingCategory(null)}>ביטול</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => deletingCategory && deleteMutation.mutate(deletingCategory.id)}
-              disabled={deleteMutation.isPending}
+              onClick={handleDeleteConfirm}
+              disabled={deleteCategory.isPending}
               className="bg-red-600 hover:bg-red-700"
             >
-              {deleteMutation.isPending ? "מוחק..." : "מחק"}
+              {deleteCategory.isPending ? "מוחק..." : "מחק"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
