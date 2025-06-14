@@ -104,8 +104,6 @@ export type Database = {
           description: string | null
           id: string
           image_url: string | null
-          ingredients: Json | null
-          instructions: string | null
           name: string
           recommended: boolean
           updated_at: string
@@ -116,8 +114,6 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string | null
-          ingredients?: Json | null
-          instructions?: string | null
           name: string
           recommended?: boolean
           updated_at?: string
@@ -128,8 +124,6 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string | null
-          ingredients?: Json | null
-          instructions?: string | null
           name?: string
           recommended?: boolean
           updated_at?: string

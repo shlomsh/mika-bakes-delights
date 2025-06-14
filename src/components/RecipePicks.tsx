@@ -4,13 +4,19 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { type Recipe } from "@/data/sampleRecipes";
 import { Loader2 } from "lucide-react";
 
-const fetchRecommendedRecipes = async (): Promise<Recipe[]> => {
+type RecipePick = {
+  id: string;
+  name: string;
+  description: string | null;
+  image_url: string | null;
+};
+
+const fetchRecommendedRecipes = async (): Promise<RecipePick[]> => {
   const { data, error } = await supabase
     .from('recipes')
-    .select('*')
+    .select('id, name, description, image_url')
     .eq('recommended', true)
     .limit(2);
 
