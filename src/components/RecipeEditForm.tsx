@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,6 +16,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { RecipeWithDetails } from '@/components/recipe-page/types';
+import GarnishSection from './recipe-edit/GarnishSection';
 import GarnishIngredientsSection from './recipe-edit/GarnishIngredientsSection';
 import GarnishInstructionsSection from './recipe-edit/GarnishInstructionsSection';
 import { useCategories } from '@/hooks/useCategories';
@@ -143,8 +143,7 @@ const RecipeEditForm: React.FC<RecipeEditFormProps> = ({ recipe, onCancel, onSav
               <IngredientsSection />
               <InstructionsSection />
               <SauceSection />
-              <GarnishIngredientsSection />
-              <GarnishInstructionsSection />
+              <GarnishSection />
 
               <div className="flex justify-end gap-2 sm:gap-4">
                 {/* Desktop Cancel Button */}
