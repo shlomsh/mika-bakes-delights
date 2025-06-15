@@ -4,6 +4,7 @@ import * as z from 'zod';
 export const recipeEditSchema = z.object({
   name: z.string().min(3, { message: "שם המתכון חייב להכיל לפחות 3 תווים." }),
   description: z.string().optional(),
+  category_id: z.string().uuid({ message: "קטגוריה לא חוקית" }).nullable().optional(),
   image_file: z.instanceof(FileList).optional(),
   ingredients: z.array(z.object({
     description: z.string().min(1, { message: "תיאור המרכיב לא יכול להיות ריק." })

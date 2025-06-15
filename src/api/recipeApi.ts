@@ -1,3 +1,4 @@
+
 import { supabase } from '@/integrations/supabase/client';
 import { RecipeEditFormValues } from '@/schemas/recipeEditSchema';
 
@@ -8,7 +9,7 @@ export async function updateRecipeInDb({ recipeId, values }: { recipeId: string,
     throw new Error("User not authenticated. Please log in to save changes.");
   }
   
-  const { name, description, ingredients, instructions, sauces, image_file, sauce_ingredients, recommended, garnish_ingredients, garnish_instructions } = values;
+  const { name, description, ingredients, instructions, sauces, image_file, sauce_ingredients, recommended, garnish_ingredients, garnish_instructions, category_id } = values;
 
   let newImageUrl: string | undefined = undefined;
 
@@ -33,7 +34,7 @@ export async function updateRecipeInDb({ recipeId, values }: { recipeId: string,
     newImageUrl = urlData.publicUrl;
   }
 
-  const recipeUpdateData: { name: string; description?: string | null; image_url?: string; recommended?: boolean } = {
+  const recipeUpdateData: { name: string; description?: string | null; image_url?: string; recommended?: boolean; category_id?: string | null } = {
     name,
     description: values.description || null,
   };
@@ -44,6 +45,10 @@ export async function updateRecipeInDb({ recipeId, values }: { recipeId: string,
   
   if (typeof recommended === 'boolean') {
     recipeUpdateData.recommended = recommended;
+  }
+
+  if (category_id !== undefined) {
+    recipeUpdateData.category_id = category_id;
   }
 
   const { error: recipeError } = await supabase

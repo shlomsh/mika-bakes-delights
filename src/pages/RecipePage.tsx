@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -117,6 +118,7 @@ const RecipePage: React.FC = () => {
   const handleSaveSuccess = () => {
     setIsEditing(false);
     queryClient.invalidateQueries({ queryKey: ['recommendedRecipes'] });
+    queryClient.invalidateQueries({ queryKey: ['recipes'] });
     refetch();
   };
 
