@@ -7,6 +7,7 @@ import { Session } from '@supabase/supabase-js';
 import { Button } from './ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
 import { useToast } from '@/hooks/use-toast';
+import { LogOut } from 'lucide-react';
 
 const AuthComponent = () => {
     const [session, setSession] = useState<Session | null>(null);
@@ -40,9 +41,9 @@ const AuthComponent = () => {
     if (session) {
         return (
             <div className="flex items-center gap-2">
-                <span className="text-sm text-choco hidden sm:inline">שלום, {session.user.email?.split('@')[0]}</span>
-                <Button onClick={handleLogout} variant="outline" className="text-choco border-choco hover:bg-choco/10">
-                    התנתק
+                <Button onClick={handleLogout} variant="ghost" size="icon" className="sm:w-auto sm:px-4">
+                    <LogOut />
+                    <span className="hidden sm:inline">התנתק</span>
                 </Button>
             </div>
         );
