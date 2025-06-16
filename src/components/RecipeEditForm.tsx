@@ -17,8 +17,6 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { RecipeWithDetails } from '@/components/recipe-page/types';
 import GarnishSection from './recipe-edit/GarnishSection';
-import GarnishIngredientsSection from './recipe-edit/GarnishIngredientsSection';
-import GarnishInstructionsSection from './recipe-edit/GarnishInstructionsSection';
 import { useCategories } from '@/hooks/useCategories';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
