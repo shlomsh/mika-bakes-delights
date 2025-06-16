@@ -3,7 +3,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Pencil, Trash2, ArrowRight } from 'lucide-react';
-import AuthComponent from '@/components/Auth';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -108,7 +107,6 @@ const RecipeHeader: React.FC<RecipeHeaderProps> = ({ recipe, isAuthenticated, is
             <ArrowRight className="h-4 w-4" />
           </Link>
         </Button>
-        <AuthComponent />
       </div>
       <div>
         <h1 className="font-fredoka text-3xl md:text-4xl text-choco text-center md:text-right">{recipe.name}</h1>

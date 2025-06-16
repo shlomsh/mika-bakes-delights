@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import AuthComponent from "@/components/Auth";
 import type { Tables } from "@/integrations/supabase/types";
 import { RecipeSearch } from './RecipeSearch';
 
@@ -19,7 +18,6 @@ const AppHeader: React.FC<AppHeaderProps> = ({ categories }) => {
       </div>
       <div className="flex items-center gap-4">
         <RecipeSearch />
-        <AuthComponent />
       </div>
     </header>
   );
