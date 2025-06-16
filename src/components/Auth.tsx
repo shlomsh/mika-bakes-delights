@@ -7,7 +7,7 @@ import { Session } from '@supabase/supabase-js';
 import { Button } from './ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { LogOut } from 'lucide-react';
+import { LogOut, User } from 'lucide-react';
 
 const AuthComponent = () => {
     const [session, setSession] = useState<Session | null>(null);
@@ -52,8 +52,13 @@ const AuthComponent = () => {
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <Button variant="outline" className="text-choco border-choco hover:bg-choco/10">
-                    התחברות / הרשמה
+                <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-choco/60 hover:text-choco hover:bg-choco/5 text-xs font-normal"
+                >
+                    <User className="h-3 w-3 ml-1" />
+                    התחבר
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]" style={{ direction: 'ltr' }}>
@@ -70,7 +75,7 @@ const AuthComponent = () => {
                             variables: {
                                 sign_in: { email_label: 'כתובת אימייל', password_label: 'סיסמה', button_label: 'התחבר', social_provider_text: 'התחבר עם {{provider}}', link_text: 'כבר יש לך חשבון? התחבר', },
                                 sign_up: { email_label: 'כתובת אימייל', password_label: 'סיסמה', button_label: 'הירשם', social_provider_text: 'הירשם עם {{provider}}', link_text: 'אין לך חשבון? הירשם', },
-                                forgotten_password: { email_label: 'כתובת אימייל', button_label: 'שלח הוראות לאיפוס סיסמה', link_text: 'שכחת סיסמה?', },
+                                forgotten_password: { email_label: 'כתובת אימייל', button_label: 'שלח הוראות לאיפוס סיסמה', link_text: 'שכחת סיسמה?', },
                                 update_password: { password_label: 'סיסמה חדשה', button_label: 'עדכן סיסמה'}
                             },
                         }}
