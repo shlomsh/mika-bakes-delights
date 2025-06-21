@@ -58,7 +58,7 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ imagePreview, handl
         <FormField
           control={control}
           name="image_file"
-          render={({ field: { onChange, ...field } }) => (
+          render={({ field: { value, onChange, ...field } }) => (
             <FormItem>
               <FormLabel>תמונת מתכון</FormLabel>
               {imagePreview && (
