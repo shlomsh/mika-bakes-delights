@@ -4,31 +4,35 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from 'react-helmet-async';
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import CategoryPage from "./pages/CategoryPage"; // Import the new page
-import RecipePage from "./pages/RecipePage"; // Import the new recipe page
+import CategoryPage from "./pages/CategoryPage";
+import RecipePage from "./pages/RecipePage";
 import NewRecipePage from "./pages/NewRecipePage";
 
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/category/:categoryName" element={<CategoryPage />} /> {/* ADDED NEW ROUTE */}
-          <Route path="/recipe/:recipeId" element={<RecipePage />} /> {/* ADDED NEW RECIPE ROUTE */}
-          <Route path="/new-recipe" element={<NewRecipePage />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <HelmetProvider>
+    <QueryClient 
+
+ QueryClientProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/category/:categoryName" element={<CategoryPage />} />
+            <Route path="/recipe/:recipeId" element={<RecipePage />} />
+            <Route path="/new-recipe" element={<NewRecipePage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </HelmetProvider>
 );
 
 export default App;
