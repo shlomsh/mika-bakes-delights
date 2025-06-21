@@ -63,8 +63,8 @@ const Index = () => {
     >
       <AppHeader categories={categories} />
 
-      {/* Add AuthComponent to the top right of the page */}
-      <div className="absolute top-4 left-4 z-10">
+      {/* Add AuthComponent positioned separately from header */}
+      <div className="absolute top-20 left-4 sm:left-6 z-10">
         <AuthComponent />
       </div>
 
