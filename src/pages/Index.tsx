@@ -5,6 +5,7 @@ import * as z from 'zod';
 import MikaHero from "../components/MikaHero";
 import CategoryCards from "../components/CategoryCards";
 import RecipePicks from "../components/RecipePicks";
+import AuthComponent from "@/components/Auth";
 import {
   Dialog,
   DialogContent,
@@ -61,6 +62,11 @@ const Index = () => {
       }}
     >
       <AppHeader categories={categories} />
+
+      {/* Add AuthComponent to the top right of the page */}
+      <div className="absolute top-4 left-4 z-10">
+        <AuthComponent />
+      </div>
 
       {/* Main 2-column desktop grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 px-8 py-14 max-w-7xl mx-auto w-full flex-1 transition-all">
