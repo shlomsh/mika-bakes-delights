@@ -1,13 +1,12 @@
 
 import React from 'react';
 import { useFormContext, useFieldArray } from 'react-hook-form';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { FormField, FormControl, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PlusCircle, Trash2, Blend, GripVertical } from 'lucide-react';
+import { PlusCircle, Trash2, Blend, ChevronUp, ChevronDown } from 'lucide-react';
 import { RecipeEditFormValues } from '@/schemas/recipeEditSchema';
 
 const SauceSection = () => {
@@ -21,25 +20,27 @@ const SauceSection = () => {
     control, name: "sauces"
   });
 
-  const handleSauceIngredientsDragEnd = (result: any) => {
-    if (!result.destination) return;
-    
-    const sourceIndex = result.source.index;
-    const destinationIndex = result.destination.index;
-    
-    if (sourceIndex !== destinationIndex) {
-      moveSauceIngredient(sourceIndex, destinationIndex);
+  const moveSauceIngredientUp = (index: number) => {
+    if (index > 0) {
+      moveSauceIngredient(index, index - 1);
     }
   };
 
-  const handleSauceInstructionsDragEnd = (result: any) => {
-    if (!result.destination) return;
-    
-    const sourceIndex = result.source.index;
-    const destinationIndex = result.destination.index;
-    
-    if (sourceIndex !== destinationIndex) {
-      moveSauce(sourceIndex, destinationIndex);
+  const moveSauceIngredientDown = (index: number) => {
+    if (index < sauceIngredientFields.length - 1) {
+      moveSauceIngredient(index, index + 1);
+    }
+  };
+
+  const moveSauceUp = (index: number) => {
+    if (index > 0) {
+      moveSauce(index, index - 1);
+    }
+  };
+
+  const moveSauceDown = (index: number) => {
+    if (index < sauceFields.length - 1) {
+      moveSauce(index, index + 1);
     }
   };
 
@@ -55,57 +56,59 @@ const SauceSection = () => {
         <div>
           <FormLabel className="font-fredoka text-lg text-choco">מצרכים לרוטב</FormLabel>
           <div className="space-y-4 mt-2">
-            <DragDropContext onDragEnd={handleSauceIngredientsDragEnd}>
-              <Droppable droppableId="sauce-ingredients-list">
-                {(provided) => (
-                  <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
-                    {sauceIngredientFields.map((field, index) => (
-                      <Draggable key={field.id} draggableId={field.id} index={index}>
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            className={`${snapshot.isDragging ? 'shadow-lg bg-white' : ''}`}
+            <div className="space-y-4">
+              {sauceIngredientFields.map((field, index) => (
+                <FormField
+                  key={field.id}
+                  control={control}
+                  name={`sauce_ingredients.${index}.description`}
+                  render={({ field: formField }) => (
+                    <FormItem>
+                      <div className="flex items-center gap-2">
+                        <div className="flex flex-col gap-1">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={() => moveSauceIngredientUp(index)}
+                            disabled={index === 0}
+                            className="h-6 w-6"
+                            aria-label="הזז למעלה"
                           >
-                            <FormField
-                              control={control}
-                              name={`sauce_ingredients.${index}.description`}
-                              render={({ field: formField }) => (
-                                <FormItem>
-                                  <div className="flex items-center gap-2">
-                                    <div
-                                      {...provided.dragHandleProps}
-                                      className="p-1 cursor-grab active:cursor-grabbing hover:bg-gray-100 rounded"
-                                    >
-                                      <GripVertical className="h-4 w-4 text-gray-400" />
-                                    </div>
-                                    <span className="text-gray-500 font-medium w-6 text-center">{index + 1}.</span>
-                                    <FormControl>
-                                      <Input {...formField} placeholder="לדוגמה: 1/2 כוס שמן זית" />
-                                    </FormControl>
-                                    <Button 
-                                      type="button" 
-                                      variant="outline" 
-                                      size="icon" 
-                                      onClick={() => removeSauceIngredient(index)} 
-                                      aria-label="מחק מצרך לרוטב"
-                                    >
-                                      <Trash2 className="h-4 w-4 text-red-500" />
-                                    </Button>
-                                  </div>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
+                            <ChevronUp className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={() => moveSauceIngredientDown(index)}
+                            disabled={index === sauceIngredientFields.length - 1}
+                            className="h-6 w-6"
+                            aria-label="הזז למטה"
+                          >
+                            <ChevronDown className="h-3 w-3" />
+                          </Button>
+                        </div>
+                        <span className="text-gray-500 font-medium w-6 text-center">{index + 1}.</span>
+                        <FormControl>
+                          <Input {...formField} placeholder="לדוגמה: 1/2 כוס שמן זית" />
+                        </FormControl>
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          size="icon" 
+                          onClick={() => removeSauceIngredient(index)} 
+                          aria-label="מחק מצרך לרוטב"
+                        >
+                          <Trash2 className="h-4 w-4 text-red-500" />
+                        </Button>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
+            </div>
             
             {/* Desktop Add Button */}
             <Button type="button" variant="outline" onClick={() => appendSauceIngredient({ description: '' })} className="hidden sm:inline-flex">
@@ -121,57 +124,59 @@ const SauceSection = () => {
         <div>
           <FormLabel className="font-fredoka text-lg text-choco mt-4">אופן הכנת הרוטב</FormLabel>
           <div className="space-y-4 mt-2">
-            <DragDropContext onDragEnd={handleSauceInstructionsDragEnd}>
-              <Droppable droppableId="sauce-instructions-list">
-                {(provided) => (
-                  <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
-                    {sauceFields.map((field, index) => (
-                      <Draggable key={field.id} draggableId={field.id} index={index}>
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            className={`${snapshot.isDragging ? 'shadow-lg bg-white' : ''}`}
+            <div className="space-y-4">
+              {sauceFields.map((field, index) => (
+                <FormField
+                  key={field.id}
+                  control={control}
+                  name={`sauces.${index}.description`}
+                  render={({ field: formField }) => (
+                    <FormItem>
+                      <FormLabel>שלב {index + 1}</FormLabel>
+                      <div className="flex items-start gap-2">
+                        <div className="flex flex-col gap-1 mt-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={() => moveSauceUp(index)}
+                            disabled={index === 0}
+                            className="h-6 w-6"
+                            aria-label="הזז למעלה"
                           >
-                            <FormField
-                              control={control}
-                              name={`sauces.${index}.description`}
-                              render={({ field: formField }) => (
-                                <FormItem>
-                                  <FormLabel>שלב {index + 1}</FormLabel>
-                                  <div className="flex items-start gap-2">
-                                    <div
-                                      {...provided.dragHandleProps}
-                                      className="mt-2 p-1 cursor-grab active:cursor-grabbing hover:bg-gray-100 rounded"
-                                    >
-                                      <GripVertical className="h-4 w-4 text-gray-400" />
-                                    </div>
-                                    <FormControl>
-                                      <Textarea {...formField} placeholder="תאר את שלב הכנת הרוטב..." />
-                                    </FormControl>
-                                    <Button 
-                                      type="button" 
-                                      variant="outline" 
-                                      size="icon" 
-                                      onClick={() => removeSauce(index)} 
-                                      aria-label="מחק שלב מהרוטב"
-                                    >
-                                      <Trash2 className="h-4 w-4 text-red-500" />
-                                    </Button>
-                                  </div>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
+                            <ChevronUp className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            onClick={() => moveSauceDown(index)}
+                            disabled={index === sauceFields.length - 1}
+                            className="h-6 w-6"
+                            aria-label="הזז למטה"
+                          >
+                            <ChevronDown className="h-3 w-3" />
+                          </Button>
+                        </div>
+                        <FormControl>
+                          <Textarea {...formField} placeholder="תאר את שלב הכנת הרוטב..." />
+                        </FormControl>
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          size="icon" 
+                          onClick={() => removeSauce(index)} 
+                          aria-label="מחק שלב מהרוטב"
+                        >
+                          <Trash2 className="h-4 w-4 text-red-500" />
+                        </Button>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ))}
+            </div>
             
             {/* Desktop Add Button */}
             <Button type="button" variant="outline" onClick={() => appendSauce({ description: '' })} className="hidden sm:inline-flex">
