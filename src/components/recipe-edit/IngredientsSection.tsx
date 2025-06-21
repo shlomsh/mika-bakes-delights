@@ -34,11 +34,11 @@ const IngredientsSection = () => {
       </CardHeader>
       <CardContent className="space-y-4">
         <DragDropContext onDragEnd={handleDragEnd}>
-          <Droppable droppableId="ingredients">
+          <Droppable droppableId="ingredients-list">
             {(provided) => (
               <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
                 {fields.map((field, index) => (
-                  <Draggable key={field.id} draggableId={`ingredients-${index}`} index={index}>
+                  <Draggable key={field.id} draggableId={`ingredients-${field.id}`} index={index}>
                     {(provided, snapshot) => (
                       <div
                         ref={provided.innerRef}

@@ -56,11 +56,11 @@ const SauceSection = () => {
           <FormLabel className="font-fredoka text-lg text-choco">מצרכים לרוטב</FormLabel>
           <div className="space-y-4 mt-2">
             <DragDropContext onDragEnd={handleSauceIngredientDragEnd}>
-              <Droppable droppableId="sauce-ingredients">
+              <Droppable droppableId="sauce-ingredients-list">
                 {(provided) => (
                   <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
                     {sauceIngredientFields.map((field, index) => (
-                      <Draggable key={field.id} draggableId={`sauce-ingredients-${index}`} index={index}>
+                      <Draggable key={field.id} draggableId={`sauce-ingredients-${field.id}`} index={index}>
                         {(provided, snapshot) => (
                           <div
                             ref={provided.innerRef}
@@ -114,11 +114,11 @@ const SauceSection = () => {
           <FormLabel className="font-fredoka text-lg text-choco mt-4">אופן הכנת הרוטב</FormLabel>
           <div className="space-y-4 mt-2">
             <DragDropContext onDragEnd={handleSauceDragEnd}>
-              <Droppable droppableId="sauce-instructions">
+              <Droppable droppableId="sauce-instructions-list">
                 {(provided) => (
                   <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
                     {sauceFields.map((field, index) => (
-                      <Draggable key={field.id} draggableId={`sauce-instructions-${index}`} index={index}>
+                      <Draggable key={field.id} draggableId={`sauce-instructions-${field.id}`} index={index}>
                         {(provided, snapshot) => (
                           <div
                             ref={provided.innerRef}

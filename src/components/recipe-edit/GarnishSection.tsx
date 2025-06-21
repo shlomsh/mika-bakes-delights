@@ -56,11 +56,11 @@ const GarnishSection = () => {
           <FormLabel className="font-fredoka text-lg text-choco">מרכיבי התוספת</FormLabel>
           <div className="space-y-4 mt-2">
             <DragDropContext onDragEnd={handleGarnishIngredientDragEnd}>
-              <Droppable droppableId="garnish-ingredients">
+              <Droppable droppableId="garnish-ingredients-list">
                 {(provided) => (
                   <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
                     {garnishIngredientFields.map((field, index) => (
-                      <Draggable key={field.id} draggableId={`garnish-ingredients-${index}`} index={index}>
+                      <Draggable key={field.id} draggableId={`garnish-ingredients-${field.id}`} index={index}>
                         {(provided, snapshot) => (
                           <div
                             ref={provided.innerRef}
@@ -114,11 +114,11 @@ const GarnishSection = () => {
           <FormLabel className="font-fredoka text-lg text-choco mt-4">הוראות להכנת התוספת</FormLabel>
           <div className="space-y-4 mt-2">
             <DragDropContext onDragEnd={handleGarnishInstructionDragEnd}>
-              <Droppable droppableId="garnish-instructions">
+              <Droppable droppableId="garnish-instructions-list">
                 {(provided) => (
                   <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
                     {garnishInstructionFields.map((field, index) => (
-                      <Draggable key={field.id} draggableId={`garnish-instructions-${index}`} index={index}>
+                      <Draggable key={field.id} draggableId={`garnish-instructions-${field.id}`} index={index}>
                         {(provided, snapshot) => (
                           <div
                             ref={provided.innerRef}
