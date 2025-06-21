@@ -5,6 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { FormField, FormControl, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Upload, Image } from 'lucide-react';
 import { RecipeEditFormValues } from '@/schemas/recipeEditSchema';
 
 interface BasicInfoSectionProps {
@@ -16,6 +18,11 @@ interface BasicInfoSectionProps {
 const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ imagePreview, handleImageChange, recipeName }) => {
   const { control, register } = useFormContext<RecipeEditFormValues>();
   const { onChange: onImageFieldChange, ...restImageRegister } = register("image_file");
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleButtonClick = () => {
+    fileInputRef.current?.click();
+  };
 
   return (
     <Card>
@@ -48,14 +55,35 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ imagePreview, handl
         <FormItem>
           <FormLabel>תמונת מתכון</FormLabel>
           {imagePreview && (
-            <div className="mt-2">
-              <img src={imagePreview} alt="תצוגה מקדימה" className="w-full max-w-sm rounded-md object-cover" />
+            <div className="mt-2 mb-4">
+              <img 
+                src={imagePreview} 
+                alt="תצוגה מקדימה" 
+                className="w-full max-w-sm rounded-lg object-cover shadow-md hover:shadow-lg transition-shadow duration-200" 
+              />
             </div>
           )}
+          <div className="space-y-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleButtonClick}
+              className="w-full sm:w-auto bg-pastelYellow/20 border-pastelYellow hover:bg-pastelYellow/40 text-choco font-fredoka transition-all duration-200 hover:scale-105 active:scale-95"
+            >
+              <Upload className="ml-2 h-4 w-4" />
+              {imagePreview ? 'שנה תמונה' : 'העלה תמונה'}
+            </Button>
+            <p className="text-sm text-choco/60 flex items-center gap-1">
+              <Image className="h-3 w-3" />
+              קבצי תמונה בלבד (JPG, PNG, WebP)
+            </p>
+          </div>
           <FormControl>
-            <Input 
-              type="file" 
+            <input
+              ref={fileInputRef}
+              type="file"
               accept="image/*"
+              className="hidden"
               {...restImageRegister}
               onChange={(event) => {
                 onImageFieldChange(event);
