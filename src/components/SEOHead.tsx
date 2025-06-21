@@ -17,7 +17,14 @@ const SEOHead: React.FC<SEOHeadProps> = ({
   url,
   type = "website"
 }) => {
-  const fullImageUrl = image.startsWith('http') ? image : `${window.location.origin}${image}`;
+  // Ensure we have a full URL for the image
+  const getFullImageUrl = (imageUrl: string) => {
+    if (!imageUrl) return `${window.location.origin}/lovable-uploads/ba509ec5-29e1-4ea7-9d37-63b4c65f5cef.png`;
+    if (imageUrl.startsWith('http')) return imageUrl;
+    return `${window.location.origin}${imageUrl}`;
+  };
+
+  const fullImageUrl = getFullImageUrl(image);
   const fullUrl = url ? `${window.location.origin}${url}` : window.location.href;
 
   return (
@@ -29,9 +36,12 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={fullImageUrl} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
       <meta property="og:url" content={fullUrl} />
       <meta property="og:type" content={type} />
       <meta property="og:locale" content="he_IL" />
+      <meta property="og:site_name" content="ספר המתכונים של מיקה" />
       
       {/* Twitter Card Tags */}
       <meta name="twitter:card" content="summary_large_image" />
