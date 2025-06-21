@@ -60,7 +60,7 @@ const SauceSection = () => {
                 {(provided) => (
                   <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
                     {sauceIngredientFields.map((field, index) => (
-                      <Draggable key={field.id} draggableId={`sauce-ingredient-${field.id}`} index={index}>
+                      <Draggable key={field.id} draggableId={`sauce-ingredients-${index}`} index={index}>
                         {(provided, snapshot) => (
                           <div
                             ref={provided.innerRef}
@@ -118,7 +118,7 @@ const SauceSection = () => {
                 {(provided) => (
                   <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
                     {sauceFields.map((field, index) => (
-                      <Draggable key={field.id} draggableId={`sauce-instruction-${field.id}`} index={index}>
+                      <Draggable key={field.id} draggableId={`sauce-instructions-${index}`} index={index}>
                         {(provided, snapshot) => (
                           <div
                             ref={provided.innerRef}

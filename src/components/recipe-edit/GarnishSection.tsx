@@ -60,7 +60,7 @@ const GarnishSection = () => {
                 {(provided) => (
                   <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
                     {garnishIngredientFields.map((field, index) => (
-                      <Draggable key={field.id} draggableId={`garnish-ingredient-${field.id}`} index={index}>
+                      <Draggable key={field.id} draggableId={`garnish-ingredients-${index}`} index={index}>
                         {(provided, snapshot) => (
                           <div
                             ref={provided.innerRef}
@@ -118,7 +118,7 @@ const GarnishSection = () => {
                 {(provided) => (
                   <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
                     {garnishInstructionFields.map((field, index) => (
-                      <Draggable key={field.id} draggableId={`garnish-instruction-${field.id}`} index={index}>
+                      <Draggable key={field.id} draggableId={`garnish-instructions-${index}`} index={index}>
                         {(provided, snapshot) => (
                           <div
                             ref={provided.innerRef}
