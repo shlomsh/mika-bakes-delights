@@ -38,7 +38,7 @@ const IngredientsSection = () => {
             {(provided) => (
               <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
                 {fields.map((field, index) => (
-                  <Draggable key={field.id} draggableId={field.id} index={index}>
+                  <Draggable key={field.id} draggableId={`ingredient-${field.id}`} index={index}>
                     {(provided, snapshot) => (
                       <div
                         ref={provided.innerRef}
