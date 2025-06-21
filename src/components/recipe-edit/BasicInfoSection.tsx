@@ -16,12 +16,15 @@ interface BasicInfoSectionProps {
 }
 
 const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ imagePreview, handleImageChange, recipeName }) => {
-  const { control, register } = useFormContext<RecipeEditFormValues>();
-  const { onChange: onImageFieldChange, ...restImageRegister } = register("image_file");
+  const { control } = useFormContext<RecipeEditFormValues>();
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleButtonClick = () => {
     fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    handleImageChange(event);
   };
 
   return (
@@ -52,47 +55,53 @@ const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({ imagePreview, handl
             </FormItem>
           )}
         />
-        <FormItem>
-          <FormLabel>תמונת מתכון</FormLabel>
-          {imagePreview && (
-            <div className="mt-2 mb-4">
-              <img 
-                src={imagePreview} 
-                alt="תצוגה מקדימה" 
-                className="w-full max-w-sm rounded-lg object-cover shadow-md hover:shadow-lg transition-shadow duration-200" 
-              />
-            </div>
+        <FormField
+          control={control}
+          name="image_file"
+          render={({ field: { onChange, ...field } }) => (
+            <FormItem>
+              <FormLabel>תמונת מתכון</FormLabel>
+              {imagePreview && (
+                <div className="mt-2 mb-4">
+                  <img 
+                    src={imagePreview} 
+                    alt="תצוגה מקדימה" 
+                    className="w-full max-w-sm rounded-lg object-cover shadow-md hover:shadow-lg transition-shadow duration-200" 
+                  />
+                </div>
+              )}
+              <div className="space-y-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleButtonClick}
+                  className="w-full sm:w-auto bg-pastelYellow/20 border-pastelYellow hover:bg-pastelYellow/40 text-choco font-fredoka transition-all duration-200 hover:scale-105 active:scale-95"
+                >
+                  <Upload className="ml-2 h-4 w-4" />
+                  {imagePreview ? 'שנה תמונה' : 'העלה תמונה'}
+                </Button>
+                <p className="text-sm text-choco/60 flex items-center gap-1">
+                  <Image className="h-3 w-3" />
+                  קבצי תמונה בלבד (JPG, PNG, WebP)
+                </p>
+              </div>
+              <FormControl>
+                <input
+                  {...field}
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(event) => {
+                    onChange(event.target.files);
+                    handleFileChange(event);
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           )}
-          <div className="space-y-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleButtonClick}
-              className="w-full sm:w-auto bg-pastelYellow/20 border-pastelYellow hover:bg-pastelYellow/40 text-choco font-fredoka transition-all duration-200 hover:scale-105 active:scale-95"
-            >
-              <Upload className="ml-2 h-4 w-4" />
-              {imagePreview ? 'שנה תמונה' : 'העלה תמונה'}
-            </Button>
-            <p className="text-sm text-choco/60 flex items-center gap-1">
-              <Image className="h-3 w-3" />
-              קבצי תמונה בלבד (JPG, PNG, WebP)
-            </p>
-          </div>
-          <FormControl>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              {...restImageRegister}
-              onChange={(event) => {
-                onImageFieldChange(event);
-                handleImageChange(event);
-              }}
-            />
-          </FormControl>
-          <FormMessage />
-        </FormItem>
+        />
       </CardContent>
     </Card>
   );
